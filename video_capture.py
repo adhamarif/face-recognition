@@ -36,6 +36,7 @@ def video_cap(cascade, image_output, face_output, num_image=10, total=0):
                 cv2.imwrite(face_path, frame)
                 
                 total += 1
+            print(f"{num_image} images completely snapped")
 
         # Break the loop when 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
