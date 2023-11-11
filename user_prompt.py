@@ -24,6 +24,8 @@ for folder in [image_folder, faces_folder]:
         os.makedirs(folder_path)
         print(f"Folder created successfully at {folder_path}")
         current_id = 0
+    elif len(os.listdir(folder_path)) == 0:
+        current_id = 0
     else:
         print(f"Folder already exists at {folder_path}")
 
