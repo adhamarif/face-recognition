@@ -1,7 +1,11 @@
 import cv2
 import os
 
-def video_cap(cascade, image_output, face_output, num_image=10, total=0):
+def video_cap(cascade, image_output, face_output, total=0):
+    """
+    This function runs the image capturing and face cropping process 
+    of generating the facial recognition dataset.
+    """
     cap = cv2.VideoCapture(0)
     while cap.isOpened():
         # Read the frame from the video stream
@@ -21,22 +25,27 @@ def video_cap(cascade, image_output, face_output, num_image=10, total=0):
         faces = cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(20, 20))
 
         for (x, y, w, h) in faces:
-            #cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            # Cropping original frame according to region of face detection, removing the bounding box border
+            face_img = frame[y+2:y+h-2,x+2:x+w-2]
+            # Display bounding box in display window
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
         # Display the frame with detected eyes
         cv2.imshow('Detected face', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('k'):
-            for i in range(num_image):
-                image_path = os.path.sep.join([image_output, f"{str(total).zfill(5)}.png"])
-                cv2.imwrite(image_path, copy_frame)
 
-                face_path = os.path.sep.join([face_output, f"{str(total).zfill(5)}.png"])
-                cv2.imwrite(face_path, frame)
+            # Writes the original image into the desired directory
+            image_path = os.path.sep.join([image_output, f"{str(total).zfill(5)}.png"])
+            cv2.imwrite(image_path, copy_frame)
+            
+            # Writes the cropped face into the desired directory
+            face_path = os.path.sep.join([face_output, f"{str(total).zfill(5)}.png"])
+            cv2.imwrite(face_path, face_img)
                 
-                total += 1
-            print(f"{num_image} images completely snapped")
+            total += 1
+            
+            print(f"{total} images captured and saved.")
 
         # Break the loop when 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
