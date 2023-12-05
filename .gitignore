@@ -1,6 +1,9 @@
 # Ignore datasets
 datasets/
 
+# Ignore log folders for tensorboard
+runs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
