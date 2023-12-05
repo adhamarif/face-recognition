@@ -98,7 +98,8 @@ if __name__ == '__main__':
         transforms.ConvertImageDtype(torch.float32)
     )
 
-    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform)
+    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform,
+                                 target_label = 'dennis')
     dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
     
     batch, labels = dataloader.__iter__().__next__()

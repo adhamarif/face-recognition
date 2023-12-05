@@ -68,7 +68,8 @@ if __name__ == '__main__':
     )
 
     # load the datasets
-    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform)
+    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, 
+                                 transform=transform, target_label='dennis')
     dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
     # init the network and model
