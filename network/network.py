@@ -54,8 +54,6 @@ class NeuralNetwork(torch.nn.Module):
             print(f"Size after layer {i}:{x.size()}")
         return x
 
-# model = NeuralNetwork().to(DEVICE)
-# print(model)
 
 if __name__ == "__main__":
     
@@ -66,10 +64,13 @@ if __name__ == "__main__":
     model_parameters = filter(lambda p: p.requires_grad, net.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
     print(f"Network has {params} total parameters")
-
+    loss_fn = torch.nn.CrossEntropyLoss()
     batch, labels = dataloader.__iter__().__next__()
+    batch = batch.to(DEVICE)
+    labels = labels.to(DEVICE)
     x = net(batch)
-    print(x.shape)
+    loss = loss_fn(x,labels)
+    print(x.shape,loss)
 
 
     # RESIZE- error happening because image is not resized before feeding!!!!!!
