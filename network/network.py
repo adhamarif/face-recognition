@@ -7,6 +7,7 @@ from device import DEVICE
 from load_dataset import CustomImageDataset, LABEL_FILE, IMAGE_FOLDER
 import numpy as np
 from transform import training_transform,validation_transform
+from sklearn.model_selection import train_test_split
 
 
 class Down(nn.Module):
@@ -51,26 +52,28 @@ class NeuralNetwork(torch.nn.Module):
     def forward(self, x):
         for i,layer in enumerate(self.seq):
             x = layer(x)
-            print(f"Size after layer {i}:{x.size()}")
+            # print(f"Size after layer {i}:{x.size()}")
         return x
 
 
 if __name__ == "__main__":
     
-    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,transform=training_transform)
-    dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
-    num_labels = dataset.img_labels.iloc[:, 1].nunique()
+    train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='train',balance_class=True,transform=training_transform)
+    val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val',transform=validation_transform)
+    test_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='test',transform=validation_transform)
+    dataloader_train = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    dataloader_val = DataLoader(val_dataset, batch_size=32, shuffle=True)
+    dataloader_test = DataLoader(test_dataset, batch_size=3, shuffle=True)
+    num_labels = train_dataset.img_labels.iloc[:, 1].nunique()
     net = NeuralNetwork(num_labels).to(DEVICE)
     model_parameters = filter(lambda p: p.requires_grad, net.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
     print(f"Network has {params} total parameters")
     loss_fn = torch.nn.CrossEntropyLoss()
-    batch, labels = dataloader.__iter__().__next__()
+    batch, labels = dataloader_train.__iter__().__next__()
     batch = batch.to(DEVICE)
     labels = labels.to(DEVICE)
     x = net(batch)
     loss = loss_fn(x,labels)
     print(x.shape,loss)
 
-
-    # RESIZE- error happening because image is not resized before feeding!!!!!!
