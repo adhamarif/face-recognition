@@ -1,8 +1,12 @@
 # Ignore datasets
 datasets/
 
+# Ignore model checkpoints
+*.pth
+
 # Ignore log folders for tensorboard
 runs/
+runs_new/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
