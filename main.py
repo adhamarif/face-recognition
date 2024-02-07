@@ -6,7 +6,7 @@ import gdown as gd
 import torch
 from network.network import NeuralNetwork
 from network.device import DEVICE
-from network.transform import image_transform
+from network.transform import image_transform as net_img_transform
 from PIL import Image
 from torchvision.transforms import transforms
 import torch.nn as nn
@@ -14,14 +14,14 @@ from autoencoder.autoencoder_net import Network
 
 cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 cascade = cv2.CascadeClassifier(cascade_path)
-num_labels = 10
-#fr_net = NeuralNetwork(num_labels).to(DEVICE)
+num_labels = 12
+fr_net = NeuralNetwork(num_labels).to(DEVICE)
 confidence_threshold = 0.9
 
 ae_net = Network().to(DEVICE)
 
 PATH_TO_URL = {
-  "fr_model_test.pt":  "https://drive.google.com/file/d/15qumR5MBFtoZpq-DO-si3nA91nLbVhS_/view",
+  "fr_model_best.pt":  "https://drive.google.com/file/d/1YIgIkFDk_P_j9iSnnxSt0F-bqMavxJDb/view",
   "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
@@ -42,11 +42,6 @@ def label_translator(pred_id):
         if pred_id == key : 
             return value
 
-cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
-cascade = cv2.CascadeClassifier(cascade_path)
-num_labels = 12
-fr_net = NeuralNetwork(num_labels).to(DEVICE)
-confidence_threshold = 0.85
 
 def face_recognition(fr_model):
     # This function takes the face recognition model and runs the video footage
@@ -78,7 +73,7 @@ def face_recognition(fr_model):
             face_roi = frame[y:y + h, x:x + w]
 
             # Convert the ROI np array to PIL image, resize to target  size, and convert to Tensor
-            face_tensor = image_transform(face_roi).unsqueeze(0).to(DEVICE)
+            face_tensor = net_img_transform(face_roi).unsqueeze(0).to(DEVICE)
 
             # Perform face recognition using the loaded model
             with torch.no_grad():
