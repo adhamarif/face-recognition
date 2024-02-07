@@ -8,6 +8,7 @@ import numpy as np
 from autoencoder_net import Network, Encoder, Decoder
 from tqdm import tqdm
 import os
+import torch.optim.lr_scheduler as lr_scheduler
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -19,17 +20,21 @@ class Model:
         self.writer = SummaryWriter()
 
         self.optimizer = self.get_optimizer()
+        self.scheduler = self.get_scheduler()
     
     def get_optimizer(self):
         # Optimizers specified in the torch.optim package
         return torch.optim.Adam(self.network.parameters(), lr=0.001)
     
-    def train(self, dataloader, num_epochs, save_path=None):
+    def get_scheduler(self):
+        return lr_scheduler.StepLR(self.optimizer, step_size=1, gamma=0.1)
+    
+    def train(self, train_dataloader, val_dataloader, num_epochs, save_path=None):
         best_avg_loss = float('inf')
 
         for epoch in range(num_epochs):
             # Set up tqdm progress bar
-            progress = tqdm(dataloader, desc=f'Epoch {epoch + 1}/{num_epochs}')
+            progress = tqdm(train_dataloader, desc=f'Epoch {epoch + 1}/{num_epochs}')
 
             total_loss = 0.0
             num_batches = 0
@@ -60,12 +65,12 @@ class Model:
                 progress.set_postfix(loss=total_loss / num_batches)
 
                 # Log input images to TensorBoard
-                if num_batches % 10 == 0:  # Adjust this frequency as needed
+                if num_batches % 40 == 0:  # Adjust this frequency as needed
                     input_images = batch  # Adjust the number of images to log
                     output_images = outputs
 
-                    self.writer.add_images('Input Images', input_images, epoch * len(dataloader) + num_batches)
-                    self.writer.add_images('Output Images', output_images, epoch * len(dataloader) + num_batches)
+                    self.writer.add_images('Input Images', input_images, epoch * len(train_dataloader) + num_batches)
+                    self.writer.add_images('Output Images', output_images, epoch * len(train_dataloader) + num_batches)
 
             # Log training loss to TensorBoard
             self.writer.add_scalar('Training Loss', total_loss / num_batches, epoch + 1)
@@ -74,9 +79,28 @@ class Model:
             average_loss = total_loss / num_batches
             print(f'Epoch [{epoch + 1}/{num_epochs}], Average Loss: {total_loss / num_batches:.4f}')
 
-            # # save the model after every 10th epoch if save_path is available
-            # if save_path is not None and (epoch + 1) % 10 == 0:
-            #     self.save_model(save_path, epoch + 1, average_loss) # call the function to save the model
+            # Update the learning rate scheduler
+            self.scheduler.step() 
+            
+            # validation loss
+            total_val_loss = 0
+            num_batches_val = 0
+            for batch, _ in val_dataloader:
+                # Move batch to device if available
+                batch = batch.to(DEVICE)
+
+                # forward pass
+                outputs = self.network(batch)
+
+                # calculate the loss
+                val_loss = self.loss_function(outputs, batch)
+
+                # Accumulate the loss
+                total_val_loss += val_loss.item()
+                num_batches_val += 1
+            
+            average_val_loss = total_val_loss / num_batches_val
+            print(f'Avg. validation loss: {average_val_loss:.4f}')
 
             if average_loss < best_avg_loss:
                 # update the best average loss
@@ -94,12 +118,12 @@ class Model:
         # Save the model state dictionary and other information
         checkpoint = {
             'epoch': epoch,
-            'model_state_dict': self.network.state_dict(),
+            'net_state_dict': self.network.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
             'loss': average_loss,
         }
 
-        torch.save(checkpoint, os.path.join(save_path, f'best_model_checkpoint.pth'))
+        torch.save(checkpoint, os.path.join(save_path, f'autoencoder_best_model.pth'))
 
     def predict(self, dataloader):
         total_loss = 0.0
@@ -123,30 +147,38 @@ class Model:
 
             # Update progress bar
             progress.set_postfix(loss=total_loss / num_batches)
-
-
+        
+        return total_loss
 
 
 if __name__ == '__main__':
-    # Create a SummaryWriter for TensorBoard logging
-    #writer = SummaryWriter()
-
+    # transformation of the images, resize to (320, 320) and convert to float32 (normalized)
     transform = torch.nn.Sequential(
         transforms.Resize((320, 320), antialias=True),
         transforms.ConvertImageDtype(torch.float32)
     )
 
-    # load the datasets
-    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, 
-                                 transform=transform, target_label='dennis')
-    dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+    # # load the datasets
+    # dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, 
+    #                              transform=transform, target_label='dennis')
+
+    # load the training dataset
+    train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='train', balance_class=True)
+    print(f'Training dataset size: {len(train_dataset)} images')
+
+    # load the validtaion dataset
+    val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='val')
+    print(f'Validation dataset size: {len(val_dataset)} images')
+
+    train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=True)
 
     # init the network and model
     network = Network().to(DEVICE)
 
     # path for the model checkpoints
-    save_path = r'autoencoder/model_checkpoints/new_model/dennis'
+    save_path = r'autoencoder/model_checkpoints_with_schedule/'
 
     model = Model(network, loss_function=nn.MSELoss()) # use MSE as loss function
 
-    model.train(dataloader=dataloader, num_epochs=10, save_path=save_path)
+    model.train(train_dataloader=train_dataloader, val_dataloader=val_dataloader, num_epochs=20, save_path=save_path)
