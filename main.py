@@ -22,7 +22,7 @@ ae_net = Network().to(DEVICE)
 
 PATH_TO_URL = {
   "fr_model_best.pt":  "https://drive.google.com/file/d/1YIgIkFDk_P_j9iSnnxSt0F-bqMavxJDb/view",
-  "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
+  "autoencoder_best_model.pth": "qqqqqqqqqqqhttps://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
 # Define image transformation
