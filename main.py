@@ -4,9 +4,9 @@ import time
 import argparse
 import gdown as gd
 import torch
-from network import NeuralNetwork
-from device import DEVICE
-from transform import image_transform
+from network.network import NeuralNetwork
+from network.device import DEVICE
+from network.transform import image_transform
 from PIL import Image
 
 
@@ -15,7 +15,7 @@ def label_translator(pred_id):
     0: 'adham', 1: 'dennis', 2: 'justin',
     3: 'kenneth', 4: 'kenneth_brille', 5: 'liza',
     6: 'liza_brille', 7: 'miriam', 8: 'steffen',
-    9: 'vincent'
+    9: 'syahid', 10: 'syahid_brille', 11: 'vincent'
     }
     for key,value in labels_dict.items():
         if pred_id == key : 
@@ -23,9 +23,9 @@ def label_translator(pred_id):
 
 cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 cascade = cv2.CascadeClassifier(cascade_path)
-num_labels = 10
+num_labels = 12
 fr_net = NeuralNetwork(num_labels).to(DEVICE)
-confidence_threshold = 0.9
+confidence_threshold = 0.85
 
 def face_recognition(fr_model):
     # This function takes the face recognition model and runs the video footage
@@ -89,7 +89,8 @@ def face_recognition(fr_model):
     cv2.destroyAllWindows()
 
 PATH_TO_URL = {
-  "fr_model_test.pt":  "https://drive.google.com/file/d/15qumR5MBFtoZpq-DO-si3nA91nLbVhS_/view"
+  "fr_model_test.pt":  "https://drive.google.com/file/d/15qumR5MBFtoZpq-DO-si3nA91nLbVhS_/view",
+  "fr_model_best.pt": "https://drive.google.com/file/d/1YIgIkFDk_P_j9iSnnxSt0F-bqMavxJDb/view"
 }
  
 def load_model(net,model_name):
@@ -115,7 +116,7 @@ def load_model(net,model_name):
 # args = parser.parse_args()
             
 # Load the face recognition model
-model = load_model(fr_net,"fr_model_test.pt")
+model = load_model(fr_net,"fr_model_best.pt")
 model.eval()
 # model = load_model(fr_net,"fr_model_test.pt")
             

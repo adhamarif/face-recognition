@@ -3,10 +3,10 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from device import DEVICE
-from load_dataset import CustomImageDataset, LABEL_FILE, IMAGE_FOLDER
+from .device import DEVICE
+from .load_dataset import CustomImageDataset, LABEL_FILE, IMAGE_FOLDER
 import numpy as np
-from transform import training_transform,validation_transform
+from .transform import training_transform,validation_transform
 from sklearn.model_selection import train_test_split
 
 
@@ -31,28 +31,29 @@ class NeuralNetwork(torch.nn.Module):
         self.num_labels = num_labels
 
         self.seq = nn.Sequential(
-            Down(in_features =   3, out_features =  16), # 32x64x64 
-            nn.Dropout2d(0.2), # Compare https://arxiv.org/abs/1411.4280
-            Down(in_features =  16, out_features =  32), #  64x32x32
+            Down(in_features =   3, out_features =  16), # 16x128x128 
+            nn.Dropout2d(0.2), 
+            Down(in_features =  16, out_features =  32), #  32x64x64
             nn.Dropout2d(0.2),
-            Down(in_features =  32, out_features =  64), #  128x16x16
+            Down(in_features =  32, out_features =  64), #  64x32x32
             nn.Dropout2d(0.2),
-            Down(in_features =  64, out_features =  128), # 256x8x8
+            Down(in_features =  64, out_features =  128), # 128x16x16
             nn.Dropout2d(0.2),
-            Down(in_features =  128, out_features =  256), # 512x4x4
+            Down(in_features =  128, out_features =  256), # 256x8x8
+            nn.Dropout2d(0.2),
+            Down(in_features =  256, out_features = 512), # 512x4x4
             nn.Dropout2d(0.2),
             nn.Flatten(), # 4096 dimensional
-            nn.Linear(16384, 512), # 16384 to 512 dimensional
+            nn.Linear(8192, 512), # 8192 to 512 dimensional
             nn.ReLU(), # Another ReLU
             nn.Dropout(0.5),
-            nn.Linear(512, num_labels),
-            nn.Softmax(dim=-1)
+            nn.Linear(512, num_labels)
+            # nn.Softmax(dim=-1)- Commented out because CrossEntropyLoss already apply  softmax
         )
 
     def forward(self, x):
         for i,layer in enumerate(self.seq):
             x = layer(x)
-            # print(f"Size after layer {i}:{x.size()}")
         return x
 
 
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     dataloader_train = DataLoader(train_dataset, batch_size=32, shuffle=True)
     dataloader_val = DataLoader(val_dataset, batch_size=32, shuffle=True)
     dataloader_test = DataLoader(test_dataset, batch_size=3, shuffle=True)
-    num_labels = train_dataset.img_labels.iloc[:, 1].nunique()
+    num_labels = 12
     net = NeuralNetwork(num_labels).to(DEVICE)
     model_parameters = filter(lambda p: p.requires_grad, net.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
