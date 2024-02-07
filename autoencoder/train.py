@@ -8,6 +8,7 @@ import numpy as np
 from autoencoder_net import Network, Encoder, Decoder
 from tqdm import tqdm
 import os
+import torch.optim.lr_scheduler as lr_scheduler
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -19,10 +20,14 @@ class Model:
         self.writer = SummaryWriter()
 
         self.optimizer = self.get_optimizer()
+        self.scheduler = self.get_scheduler()
     
     def get_optimizer(self):
         # Optimizers specified in the torch.optim package
         return torch.optim.Adam(self.network.parameters(), lr=0.001)
+    
+    def get_scheduler(self):
+        return lr_scheduler.StepLR(self.optimizer, step_size=1, gamma=0.1)
     
     def train(self, train_dataloader, val_dataloader, num_epochs, save_path=None):
         best_avg_loss = float('inf')
@@ -60,7 +65,7 @@ class Model:
                 progress.set_postfix(loss=total_loss / num_batches)
 
                 # Log input images to TensorBoard
-                if num_batches % 10 == 0:  # Adjust this frequency as needed
+                if num_batches % 40 == 0:  # Adjust this frequency as needed
                     input_images = batch  # Adjust the number of images to log
                     output_images = outputs
 
@@ -74,8 +79,12 @@ class Model:
             average_loss = total_loss / num_batches
             print(f'Epoch [{epoch + 1}/{num_epochs}], Average Loss: {total_loss / num_batches:.4f}')
 
+            # Update the learning rate scheduler
+            self.scheduler.step() 
+            
             # validation loss
             total_val_loss = 0
+            num_batches_val = 0
             for batch, _ in val_dataloader:
                 # Move batch to device if available
                 batch = batch.to(DEVICE)
@@ -88,8 +97,10 @@ class Model:
 
                 # Accumulate the loss
                 total_val_loss += val_loss.item()
+                num_batches_val += 1
             
-            print(f'Validation loss: {total_val_loss}')
+            average_val_loss = total_val_loss / num_batches_val
+            print(f'Avg. validation loss: {average_val_loss:.4f}')
 
             if average_loss < best_avg_loss:
                 # update the best average loss
@@ -166,8 +177,8 @@ if __name__ == '__main__':
     network = Network().to(DEVICE)
 
     # path for the model checkpoints
-    save_path = r'autoencoder/model_checkpoints/'
+    save_path = r'autoencoder/model_checkpoints_with_schedule/'
 
     model = Model(network, loss_function=nn.MSELoss()) # use MSE as loss function
 
-    model.train(train_dataloader=train_dataloader, val_dataloader=val_dataloader, num_epochs=10, save_path=save_path)
+    model.train(train_dataloader=train_dataloader, val_dataloader=val_dataloader, num_epochs=20, save_path=save_path)
