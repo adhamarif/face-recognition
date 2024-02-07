@@ -5,8 +5,8 @@ import argparse
 import gdown as gd
 import torch
 from network.network import NeuralNetwork
-from autoencoder.device import DEVICE
-from transform import image_transform
+from network.device import DEVICE
+from network.transform import image_transform
 from PIL import Image
 from torchvision.transforms import transforms
 import torch.nn as nn
@@ -21,7 +21,7 @@ confidence_threshold = 0.9
 ae_net = Network().to(DEVICE)
 
 PATH_TO_URL = {
-  #"fr_model_test.pt":  "https://drive.google.com/file/d/15qumR5MBFtoZpq-DO-si3nA91nLbVhS_/view",
+  "fr_model_test.pt":  "https://drive.google.com/file/d/15qumR5MBFtoZpq-DO-si3nA91nLbVhS_/view",
   "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
@@ -36,11 +36,17 @@ def label_translator(pred_id):
     0: 'adham', 1: 'dennis', 2: 'justin',
     3: 'kenneth', 4: 'kenneth_brille', 5: 'liza',
     6: 'liza_brille', 7: 'miriam', 8: 'steffen',
-    9: 'vincent'
+    9: 'syahid', 10: 'syahid_brille', 11: 'vincent'
     }
     for key,value in labels_dict.items():
         if pred_id == key : 
             return value
+
+cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+cascade = cv2.CascadeClassifier(cascade_path)
+num_labels = 12
+fr_net = NeuralNetwork(num_labels).to(DEVICE)
+confidence_threshold = 0.85
 
 def face_recognition(fr_model):
     # This function takes the face recognition model and runs the video footage
@@ -104,7 +110,7 @@ def face_recognition(fr_model):
     cv2.destroyAllWindows()
         
 
-def ae_face_recognition(ae_model, loss_threshold=0.04):
+def ae_face_recognition(ae_model, loss_threshold=0.01):
     # This function takes the face recognition model and runs the video footage
     # It does the following in order:
     # 1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pt checkpoint file.
@@ -151,10 +157,10 @@ def ae_face_recognition(ae_model, loss_threshold=0.04):
             # You can take it from here and process the prediction variable as needed
 
             if loss < loss_threshold :
-                text = "Known Face"
+                text = f"Known Face {loss:.4f}"
                 color = (0, 255, 0)  # Green color
             else:
-                text = "Unknown Face"
+                text = f"Unknown Face {loss:.4f}"
                 color = (0, 0, 255)  # Red color
             # Draw a rectangle around the detected face
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
@@ -193,15 +199,13 @@ def load_model(net,model_name):
 # parser.add_argument("--model", required=True, help="Path to the face recognition model file")
 # args = parser.parse_args()
             
-# # Load the face recognition model
-# model = load_model(fr_net,"fr_model_test.pt")
-# model.eval()
-# # model = load_model(fr_net,"fr_model_test.pt")
+# Load the face recognition model
+model = load_model(fr_net,"fr_model_best.pt")
+model.eval()
 
 # Load the autoencoder face recognition model
 model = load_model(ae_net,"autoencoder_best_model.pth")
 model.eval()
-# model = load_model(fr_net,"fr_model_test.pt")
             
 # Load the cascade classifier
 # Run face recognition with the specified model and cascade

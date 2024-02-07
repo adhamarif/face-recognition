@@ -3,10 +3,10 @@ from torchvision import transforms
 from torchvision.utils import make_grid
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from load_dataset import CustomImageDataset, LABEL_FILE, IMAGE_FOLDER
+from .load_dataset import CustomImageDataset, LABEL_FILE, IMAGE_FOLDER
 import random
 from matplotlib import pyplot as plt
-from device import DEVICE
+from .device import DEVICE
 import numpy as np
 
 
@@ -23,6 +23,14 @@ training_transform = transforms.Compose([
 validation_transform = transforms.Compose([
         transforms.CenterCrop((256, 256)),
         transforms.ConvertImageDtype(torch.float32)
+        ]
+    )
+
+image_transform = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize((360, 360), antialias=True),
+    transforms.CenterCrop((256, 256)),
+    transforms.ToTensor()
         ]
     )
 

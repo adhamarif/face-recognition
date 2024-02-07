@@ -6,13 +6,13 @@ from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 from torchvision.io import read_image
 from torchvision.utils import make_grid
-from device import DEVICE
+from .device import DEVICE
 import torch
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-LABEL_FILE = "C:\\Users\\ASUS\\datasets\\label_mapped.csv"
-IMAGE_FOLDER = "C:\\Users\\ASUS\\datasets\\face"
+LABEL_FILE = "C:\\Users\\ASUS\\datasets\\face_label_encoded.csv"
+IMAGE_FOLDER = "C:\\Users\\ASUS\\datasets\\cleaned_face"
 
 resize_transform = transforms.Compose([
     transforms.Resize((360, 360), antialias=True),
@@ -30,8 +30,8 @@ class CustomImageDataset(Dataset):
         self.balance_class = balance_class
 
         # Split the data into training, validation, and test sets
-        train_data, test_data = train_test_split(self.img_labels, test_size=0.2, random_state=42)
-        train_data, val_data = train_test_split(train_data, test_size=0.1, random_state=42)
+        train_data, test_data = train_test_split(self.img_labels, test_size=0.1, random_state=42)
+        train_data, val_data = train_test_split(train_data, test_size=0.15, random_state=42)
 
         if self.subset == 'train':
             self.data = train_data
@@ -50,9 +50,10 @@ class CustomImageDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        img_path = os.path.join(self.img_dir, self.data.iloc[idx, 0])
+        img_path = os.path.join(self.img_dir, self.data.iloc[idx, 1])
         image = read_image(img_path).to(DEVICE)
-        label = self.data.iloc[idx, 1]
+        label = self.data.iloc[idx, 2:14].values.astype(np.float32) # Convert Pandas Series to NumPy array
+        label = torch.tensor(label, dtype=torch.float32)  # Convert NumPy array to PyTorch tensor
         # # Resize to target size, done here because all cropped faces are of different sizes
         image = resize_transform(image)
         if self.transform:
