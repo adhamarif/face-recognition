@@ -3,6 +3,7 @@ datasets/
 
 # Ignore model checkpoints
 *.pth
+*.pt
 
 # Ignore log folders for tensorboard
 runs/
