@@ -106,7 +106,7 @@ def face_recognition(fr_model):
     cv2.destroyAllWindows()
         
 
-def ae_face_recognition(ae_model, loss_threshold=0.01):
+def ae_face_recognition(ae_model, loss_threshold=0.02):
     # This function takes the face recognition model and runs the video footage
     # It does the following in order:
     # 1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pt checkpoint file.
@@ -192,7 +192,7 @@ def load_model(net,model_name):
 if __name__ == "__main__":
     # Argument parser for model and cascade paths
     parser = argparse.ArgumentParser(description="Face Recognition Script")
-    parser.add_argument("--model", required=True, help="Type of model")
+    parser.add_argument("--model", required=True, help="Type of model, ['network' or 'autoencoder']")
     args = parser.parse_args()
 
     if args.model == "network" :           
