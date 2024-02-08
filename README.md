@@ -83,13 +83,13 @@ python collect_data.py
 python clean_dataset.py --original_path your_original_face_folder --cleaned_path your_new_face_folder
 ```
 > [!IMPORTANT]
-> Remember to replace your_original_face_folder and your_new_face_folder by the paths to your own folders.
+> Remember to place the correct paths next to the `--original_path` and the `--cleaned_path` arguments.
 4. Generate the **label.csv** file the data pipeline for the model training.
 ```
 python label_generator.py --cleaned_path your_cleaned_dataset_path
 ```
 > [!IMPORTANT]
-> Remember to replace your_cleaned_dataset_path by the paths to your own folder.
+> Remember to place the correct path next to the `--cleaned_path` argument.
 
 5. Perform label encoding to your  **label.csv** file. This will generate a new file called **face_label_encoded.csv**. Execute the cells in label_encoding.ipynb (Only required for CNN model training).
 
@@ -108,7 +108,7 @@ Neural Network:
 python train_network.py --images_folder your_faces_dataset_folder
 ```
 > [!IMPORTANT]
-> Remember to replace your_faces_dataset_folder by the paths to your own folders. They are the same path for both models.
+> Remember to place the correct path next to the `--images_folder` argument.
 
 #### Run the facial recognition system with the new model
 1. Both the trained autoencoder and the trained CNN model will be saved under a  'models' directory.
