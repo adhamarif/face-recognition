@@ -50,7 +50,13 @@ The same dataset of known faces are trained by a **Convolutional Neural Network*
 
 The accuracy of each prediction is determined by a predefined confidence threshold that the predictions need to meet in order to be classed as a correct prediction. 
 
-[insert Neural Network architecture]
+The neural network architecture consists of the following components:
+
+- **Down**: 6 layers performing convolution followed by maxpooling, batch normalization and ReLU resulting in a reduction in spatial dimensions.
+- **Dropout**: Dropout layers with a dropout probability of 0.2 are applied after each Down layer, except for the last two layers where the dropout probability is 0.5.
+- **Flatten**: A layer that flattens the output from the last convolutional layer to prepare it for fully connected layers.
+- **Linear**: Fully connected layers. The first linear layer reduces the dimensionality from 8192 to 512, followed by a ReLU activation and dropout. The final linear layer reduces the dimensionality to `num_labels`.
+- **ReLU**: Activation function used after the first linear layer.
 
 ## Usage
 
@@ -130,3 +136,8 @@ Input image:
 Output image:
 
 ### Face recognition system
+Results with a known face within the dataset :
+![Known Face](readme_graphics/detected.png | 360x360 )
+
+Results with an AI generated unknown face :
+![Unknown Face](readme_graphics/undetected.png | 360x360 )
