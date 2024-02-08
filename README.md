@@ -75,7 +75,7 @@ python collect_data.py
 2. Check the datasets in the face folder. If you are fine with the collected face images, you may proceed to step 4.
 3. If the collected (face) images have a lot of noises or undesired object, you might need to either:
 - recollect the images dataset, **OR**
-- run the cleaning dataset script to get all the (face) images detected by the *haarcascades* algorithm. After that, you may need to remove the noise and undesired images from the <mark style="background-color: #2ec4b6">NEW_FOLDER</mark> manually.
+- run the cleaning dataset script to get all the (face) images detected by the *haarcascades* algorithm. After that, you may need to remove the noise and undesired images from the `NEW_FOLDER` manually.
 ```
 python clean_dataset.py
 ```
@@ -83,8 +83,8 @@ python clean_dataset.py
 ```
 python label_generator.py
 ```
-
-! Please make sure the PATH in the script is adapted with your desired PATH.
+> [!IMPORTANT]
+>Please make sure the PATH in the script is adapted with your desired PATH.
 
 #### Train the model
 Autoencoder:
@@ -97,7 +97,8 @@ Neural Network:
 
 [insert train neural network file here]
 
-! Please make sure that you check the PATH for the  <mark style="background-color: #2ec4b6">LABEL_FILE</mark> and  <mark style="background-color: #2ec4b6">IMAGE_FOLDER</mark> are adapted with your desired PATH.
+> [!IMPORTANT]
+>Please make sure that you check the PATH for the `LABEL_FILE` and `IMAGE_FOLDER` are adapted with your desired PATH.
 
 #### Run the facial recognition system with the new model
 1. Make sure the new model is available on your local (main) directory. Otherwise, it will still fetch the pre-trained model from the google drive
