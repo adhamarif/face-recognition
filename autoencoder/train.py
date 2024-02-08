@@ -2,15 +2,16 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
-from device import DEVICE
-from load_dataset import CustomImageDataset, IMAGE_FOLDER, LABEL_FILE
+from autoencoder.device import DEVICE
+from autoencoder.load_dataset import CustomImageDataset
 import numpy as np
-from autoencoder_net import Network, Encoder, Decoder
+from autoencoder.autoencoder_net import Network, Encoder, Decoder
 from tqdm import tqdm
 import os
-import torch.optim.lr_scheduler as lr_scheduler
-
 from torch.utils.tensorboard import SummaryWriter
+
+LABEL_FILE = r"D:\clean_dataset\label.csv"
+IMAGE_FOLDER = r"D:\clean_dataset"
 
 # Define a model class
 class Model:
@@ -18,16 +19,11 @@ class Model:
         self.network = network
         self.loss_function = loss_function
         self.writer = SummaryWriter()
-
         self.optimizer = self.get_optimizer()
-        self.scheduler = self.get_scheduler()
     
     def get_optimizer(self):
         # Optimizers specified in the torch.optim package
         return torch.optim.Adam(self.network.parameters(), lr=0.001)
-    
-    def get_scheduler(self):
-        return lr_scheduler.StepLR(self.optimizer, step_size=1, gamma=0.1)
     
     def train(self, train_dataloader, val_dataloader, num_epochs, save_path=None):
         best_avg_loss = float('inf')
@@ -52,7 +48,6 @@ class Model:
                 # calculate the loss
                 loss = self.loss_function(outputs, batch)
             
-
                 # backward pass
                 loss.backward()
                 self.optimizer.step()
@@ -78,29 +73,35 @@ class Model:
             # Print the average loss for the epoch
             average_loss = total_loss / num_batches
             print(f'Epoch [{epoch + 1}/{num_epochs}], Average Loss: {total_loss / num_batches:.4f}')
-
-            # Update the learning rate scheduler
-            self.scheduler.step() 
             
-            # validation loss
-            total_val_loss = 0
-            num_batches_val = 0
-            for batch, _ in val_dataloader:
-                # Move batch to device if available
-                batch = batch.to(DEVICE)
+            # Get the biggest validation loss in every epoch
+            max_val_loss = 0
 
-                # forward pass
-                outputs = self.network(batch)
+            # Switch to evaluation mode
+            self.network.eval()
+            with torch.no_grad():
+                for batch, _ in val_dataloader:
+                    # Move batch to device if available
+                    batch = batch.to(DEVICE)
 
-                # calculate the loss
-                val_loss = self.loss_function(outputs, batch)
+                    # forward pass
+                    outputs = self.network(batch)
 
-                # Accumulate the loss
-                total_val_loss += val_loss.item()
-                num_batches_val += 1
+                    # calculate the loss
+                    val_loss = self.loss_function(outputs, batch)
+
+                    # update the max validation loss value
+                    if val_loss.item() > max_val_loss:
+                        max_val_loss = val_loss.item()
             
-            average_val_loss = total_val_loss / num_batches_val
-            print(f'Avg. validation loss: {average_val_loss:.4f}')
+            #average_val_loss = total_val_loss / num_batches_val
+            print(f'Max. validation loss: {max_val_loss:.4f}')
+
+            # Log average validation loss to TensorBoard
+            self.writer.add_scalar('Max. validation loss', max_val_loss)
+
+            # Switch back to training mode
+            self.network.train()
 
             if average_loss < best_avg_loss:
                 # update the best average loss
@@ -122,7 +123,6 @@ class Model:
             'optimizer_state_dict': self.optimizer.state_dict(),
             'loss': average_loss,
         }
-
         torch.save(checkpoint, os.path.join(save_path, f'autoencoder_best_model.pth'))
 
     def predict(self, dataloader):
@@ -158,15 +158,11 @@ if __name__ == '__main__':
         transforms.ConvertImageDtype(torch.float32)
     )
 
-    # # load the datasets
-    # dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, 
-    #                              transform=transform, target_label='dennis')
-
     # load the training dataset
     train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='train', balance_class=True)
     print(f'Training dataset size: {len(train_dataset)} images')
 
-    # load the validtaion dataset
+    # load the validation dataset
     val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='val')
     print(f'Validation dataset size: {len(val_dataset)} images')
 
@@ -177,7 +173,7 @@ if __name__ == '__main__':
     network = Network().to(DEVICE)
 
     # path for the model checkpoints
-    save_path = r'autoencoder/model_checkpoints_with_schedule/'
+    save_path = r'autoencoder/model_checkpoints/'
 
     model = Model(network, loss_function=nn.MSELoss()) # use MSE as loss function
 
