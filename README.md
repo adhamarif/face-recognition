@@ -83,13 +83,13 @@ python collect_data.py
 python clean_dataset.py --original_path your_original_face_folder --cleaned_path your_new_face_folder
 ```
 > [!IMPORTANT]
-> Remember to replace your_original_face_folder and your_new_face_folder by the paths of your own folders.
+> Remember to replace your_original_face_folder and your_new_face_folder by the paths to your own folders.
 4. Generate the **label.csv** file the data pipeline for the model training.
 ```
 python label_generator.py --cleaned_path your_cleaned_dataset_path
 ```
 > [!IMPORTANT]
-> Remember to replace your_cleaned_dataset_path by the paths of your own folder.
+> Remember to replace your_cleaned_dataset_path by the paths to your own folder.
 
 5. Perform label encoding to your  **label.csv** file. This will generate a new file called **face_label_encoded.csv**. Execute the cells in label_encoding.ipynb (Only required for CNN model training).
 
