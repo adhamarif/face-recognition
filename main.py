@@ -16,12 +16,12 @@ cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 cascade = cv2.CascadeClassifier(cascade_path)
 num_labels = 12
 fr_net = NeuralNetwork(num_labels).to(DEVICE)
-confidence_threshold = 0.9
+confidence_threshold = 0.85
 
 ae_net = Network().to(DEVICE)
 
 PATH_TO_URL = {
-  "fr_model_best.pt":  "https://drive.google.com/file/d/1YIgIkFDk_P_j9iSnnxSt0F-bqMavxJDb/view",
+  "fr_model_best.pt":  "https://drive.google.com/file/d/1mY37yMq17PaPS4KrXzjloeDhDfjJ3xL5/view",
   "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
@@ -49,7 +49,7 @@ def face_recognition(fr_model):
     # 1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pt checkpoint file.
     # 2. Opens webcam and detects face using a cascade .xml file
     # 3. If faces are found, it feeds them into the face recognition model to try predict a face.
-    # 4. Store the prediction as a variable. I will take it from here.
+    # 4. Prediction is displayed in frame.
     # Open the webcam
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
@@ -109,10 +109,10 @@ def face_recognition(fr_model):
 def ae_face_recognition(ae_model, loss_threshold=0.02):
     # This function takes the face recognition model and runs the video footage
     # It does the following in order:
-    # 1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pt checkpoint file.
+    # 1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pth checkpoint file.
     # 2. Opens webcam and detects face using a cascade .xml file
-    # 3. If faces are found, it feeds them into the face recognition model to try predict a face.
-    # 4. Store the prediction as a variable. I will take it from here.
+    # 3. The face is reconstructed by the pretrained autoencoder
+    # 4. Loss value of reconstruction is shown together with "Known" or "Unknown" displayed on frame based on the loss threshold specified
     # Open the webcam
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
@@ -174,15 +174,15 @@ def ae_face_recognition(ae_model, loss_threshold=0.02):
     cv2.destroyAllWindows()
  
 def load_model(net,model_name):
-    if os.path.exists(model_name):
+    if os.path.exists("models\\" + model_name):
         chkpt = torch.load(model_name)
         net.load_state_dict(chkpt["net_state_dict"])
         return net
     else:
         if model_name in PATH_TO_URL:
             print("Downloading checkpoint...")
-            gd.download(PATH_TO_URL[model_name], model_name, fuzzy=True)
-            chkpt = torch.load(model_name)
+            gd.download(PATH_TO_URL[model_name], "models\\" + model_name, fuzzy=True)
+            chkpt = torch.load("models\\" + model_name)
             net.load_state_dict(chkpt["net_state_dict"])
             return net
 
@@ -202,7 +202,6 @@ if __name__ == "__main__":
         face_recognition(model)
 
     if args.model == "autoencoder" :
-
         # Load the autoencoder face recognition model
         model = load_model(ae_net,"autoencoder_best_model.pth")
         model.eval()

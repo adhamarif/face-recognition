@@ -47,11 +47,9 @@ if __name__ == "__main__":
     test_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='test',transform=validation_transform)
     print(f'test dataset size: {len(test_dataset)}.')
     image, label = test_dataset[int(random.uniform(0, len(test_dataset)))]
-    print(image.shape)
     batch = None
     for index in range(32):
         transformed = training_transform(image)
-        print(transformed.shape)
         transformed = transformed.reshape(1, 3, 256, 256)
         if batch is None:
             batch = transformed

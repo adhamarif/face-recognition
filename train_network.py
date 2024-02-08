@@ -5,20 +5,26 @@ from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
 from PIL import Image
 from torchvision import datasets, transforms
-from device import DEVICE
-from load_dataset import CustomImageDataset, LABEL_FILE, IMAGE_FOLDER
+from network.device import DEVICE
+from network.load_dataset import CustomImageDataset
 import numpy as np
-from transform import training_transform,validation_transform
-from network import NeuralNetwork
+from network.transform import training_transform,validation_transform
+from network.network import NeuralNetwork
 import torch.optim as optim
 from tqdm import tqdm
 import json
 import datetime
 from torch.utils.tensorboard import SummaryWriter
 import tensorboard
+import argparse
+
+parser = argparse.ArgumentParser(description="Network Training Script")
+parser.add_argument("--images_folder", required=True, help="Please specify path of your face images folder.")
+args = parser.parse_args()
 
 
-
+IMAGE_FOLDER = args.images_folder
+LABEL_FILE = IMAGE_FOLDER + "\\face_label_encoded.csv"
 
 train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='train',balance_class=True,transform=training_transform)
 val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val',transform=validation_transform)
@@ -40,7 +46,7 @@ if not os.path.exists("models"):
 
 try:
     chkpts = list(os.listdir("models"))
-    chkpt_paths = ["models/"+ i for i in chkpts] 
+    chkpt_paths = ["models\\"+ i for i in chkpts] 
     last_chkpt = chkpt_paths[-1]
     checkpoint = torch.load(last_chkpt)
     print(f"Checkpoint found.\nStarting from session {last_chkpt}....")
@@ -109,8 +115,11 @@ def train_epoch(epoch_id,tb_writer):
 
     return last_loss,last_acc
 
+
+
 # Initialize timestamp and summary writer
-timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+# Name your checkpoints with timestamps during fine-tuning. Once your find the best model its better to rename it to find it easier.
+timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S') 
 writer = SummaryWriter()
 
 # Initialize a large value for first best validation loss and small value for first best val accuracy
@@ -183,7 +192,7 @@ while True:
         best_vacc = avg_vacc
         patience_counter = 0 # Reset patience counter to 0 if there's improvement
         # Employ saving state dicts of network and optimizer as a checkpoint dictionary
-        chkpt_path = f'models/model_{timestamp}_{epoch}.pt'
+        chkpt_path = f'models/model_{timestamp}_{epoch+1}.pt'
         torch.save({
             "net_state_dict" : net.state_dict(),
             "optim_state_dict" : optimizer.state_dict(),
