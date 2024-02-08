@@ -22,7 +22,7 @@ ae_net = Network().to(DEVICE)
 
 PATH_TO_URL = {
   "fr_model_best.pt":  "https://drive.google.com/file/d/1YIgIkFDk_P_j9iSnnxSt0F-bqMavxJDb/view",
-  "autoencoder_best_model.pth": "qqqqqqqqqqqhttps://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
+  "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
 # Define image transformation
@@ -83,14 +83,15 @@ def face_recognition(fr_model):
                 # Get the index of label predicted
                 value,preds = torch.max(confidence,1) 
                 predicted_face = label_translator(preds)
-            # You can take it from here and process the prediction variable as needed
 
-            # Draw a rectangle around the detected face
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             if value > confidence_threshold :
                 text = "Detected Face: {}".format(predicted_face)  # Replace with your actual face label or information
+                color = (0, 255, 0)  # Green color
             else:
                 text = "Unknown Face"
+                color = (0, 0, 255)  # Red color
+                        # Draw a rectangle around the detected face
+            cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
         # Display the frame
@@ -188,21 +189,24 @@ def load_model(net,model_name):
         else:
             print("Error: Model doesn't exist anywhere.\nPlease train new model with train.py.")
 
-# if __name__ == "__main__":
-# Argument parser for model and cascade paths
-# parser = argparse.ArgumentParser(description="Face Recognition Script")
-# parser.add_argument("--model", required=True, help="Path to the face recognition model file")
-# args = parser.parse_args()
-            
-# Load the face recognition model
-model = load_model(fr_net,"fr_model_best.pt")
-model.eval()
+if __name__ == "__main__":
+    # Argument parser for model and cascade paths
+    parser = argparse.ArgumentParser(description="Face Recognition Script")
+    parser.add_argument("--model", required=True, help="Type of model")
+    args = parser.parse_args()
 
-# Load the autoencoder face recognition model
-model = load_model(ae_net,"autoencoder_best_model.pth")
-model.eval()
+    if args.model == "network" :           
+        # Load the face recognition model
+        model = load_model(fr_net,"fr_model_best.pt")
+        model.eval()
+        face_recognition(model)
+
+    if args.model == "autoencoder" :
+
+        # Load the autoencoder face recognition model
+        model = load_model(ae_net,"autoencoder_best_model.pth")
+        model.eval()
+        # Run face recognition with the specified model and cascade
+        ae_face_recognition(model)
             
-# Load the cascade classifier
-# Run face recognition with the specified model and cascade
-ae_face_recognition(model)
         
