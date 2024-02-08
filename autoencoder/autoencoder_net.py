@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 import numpy as np
 from torch.utils.data import DataLoader
-from load_dataset import CustomImageDataset, IMAGE_FOLDER, LABEL_FILE
+from .load_dataset import CustomImageDataset, IMAGE_FOLDER, LABEL_FILE
 from torchvision.transforms import transforms
-from device import DEVICE
+from .device import DEVICE
 
 class Down(nn.Module):
     def __init__(self, input_channels, ouput_channels):

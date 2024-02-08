@@ -3,14 +3,14 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
-from device import DEVICE
+from .device import DEVICE
 import matplotlib.pyplot as plt
 from torchvision.io import read_image
 from torchvision.utils import make_grid
 from sklearn.model_selection import train_test_split
 
-LABEL_FILE = r"D:\daisy_dataset\face_label.csv"
-IMAGE_FOLDER = r"D:\daisy_dataset\face"
+LABEL_FILE = r"D:\clean_dataset\label.csv"
+IMAGE_FOLDER = r"D:\clean_dataset"
 
 class CustomImageDataset(Dataset):
     def __init__(self, annotations_file, img_dir, transform=None, subset="train", balance_class=False, target_label=None): #, target_label=None):
