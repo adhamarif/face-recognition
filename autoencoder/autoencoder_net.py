@@ -105,12 +105,20 @@ if __name__ == '__main__':
 
     print(f"Network has {params} total parameters")
 
-    transform = torch.nn.Sequential(
+    train_transform = torch.nn.Sequential(
+        transforms.Resize((320, 320), antialias=True),
+        transforms.RandomHorizontalFlip(0.5),
+        transforms.ColorJitter(0.3, 0.3, 0.3),
+        transforms.ConvertImageDtype(torch.float32)
+    )
+
+    valid_transform = torch.nn.Sequential(
         transforms.Resize((320, 320), antialias=True),
         transforms.ConvertImageDtype(torch.float32)
     )
 
-    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform,
+
+    dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=train_transform,
                                  target_label = 'dennis')
     dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
     

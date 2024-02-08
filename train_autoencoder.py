@@ -162,18 +162,24 @@ class Model:
 
 if __name__ == '__main__':   
     # transformation of the images, resize to (320, 320) and convert to float32 (normalized)
-    transform = torch.nn.Sequential(
+    train_transform = torch.nn.Sequential(
         transforms.Resize((320, 320), antialias=True),
+        transforms.RandomHorizontalFlip(0.5),
         transforms.ColorJitter(0.3, 0.3, 0.3),
         transforms.ConvertImageDtype(torch.float32)
     )
 
+    valid_transform = torch.nn.Sequential(
+        transforms.Resize((320, 320), antialias=True),
+        transforms.ConvertImageDtype(torch.float32)
+    )
+
     # load the training dataset
-    train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='train', balance_class=True)
+    train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=train_transform, subset='train', balance_class=True)
     print(f'Training dataset size: {len(train_dataset)} images')
 
     # load the validation dataset
-    val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='val')
+    val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=valid_transform, subset='val')
     print(f'Validation dataset size: {len(val_dataset)} images')
 
     train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -190,4 +196,4 @@ if __name__ == '__main__':
 
     model = Model(network, loss_function=nn.MSELoss()) # use MSE as loss function
 
-    model.train(train_dataloader=train_dataloader, val_dataloader=val_dataloader, num_epochs=2, save_path=save_path)
+    model.train(train_dataloader=train_dataloader, val_dataloader=val_dataloader, num_epochs=20, save_path=save_path)
