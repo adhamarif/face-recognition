@@ -11,6 +11,7 @@ import torch
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+# Please replace with your own respective paths for each
 LABEL_FILE = "C:\\Users\\ASUS\\datasets\\face_label_encoded.csv"
 IMAGE_FOLDER = "C:\\Users\\ASUS\\datasets\\cleaned_face"
 

@@ -9,9 +9,18 @@ from autoencoder.autoencoder_net import Network, Encoder, Decoder
 from tqdm import tqdm
 import os
 from torch.utils.tensorboard import SummaryWriter
+import argparse
 
-LABEL_FILE = r"D:\clean_dataset\label.csv"
-IMAGE_FOLDER = r"D:\clean_dataset"
+# Commented out for copy-paste purposes during live presentation
+# LABEL_FILE = r"D:\clean_dataset\label.csv"
+# IMAGE_FOLDER = r"D:\clean_dataset"
+
+parser = argparse.ArgumentParser(description="Autoencoder Training Script")
+parser.add_argument("--images_folder", required=True, help="Please specify path of your face images folder.")
+args = parser.parse_args()
+
+IMAGE_FOLDER = args.images_folder
+LABEL_FILE = IMAGE_FOLDER + "\\label.csv"
 
 # Define a model class
 class Model:
@@ -173,8 +182,11 @@ if __name__ == '__main__':
     # init the network and model
     network = Network().to(DEVICE)
 
+    if not os.path.exists("models"):
+        os.makedirs("models")
+
     # path for the model checkpoints
-    save_path = os.getcwd()
+    save_path = "models\\"
 
     model = Model(network, loss_function=nn.MSELoss()) # use MSE as loss function
 

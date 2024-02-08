@@ -3,9 +3,16 @@ import pandas as pd
 import numpy as np
 import csv
 from tqdm import tqdm
+import argparse
 
-# Get the directory for the face dataset
-faces_folder = r"D:\clean_dataset"
+# Get the directory for the face dataset - Commented out for copy-paste purposes for live presentation
+# faces_folder = r"C:\Users\ASUS\datasets\cleaned-face"
+
+parser = argparse.ArgumentParser(description="Label File Generator Script")
+parser.add_argument("--cleaned_path", required=True, help="Please specify path of your cleaned dataset file.")
+args = parser.parse_args()
+
+faces_folder = args.cleaned_path
 
 # List all the folder inside the face folder
 names = list(os.listdir(faces_folder))
