@@ -137,7 +137,7 @@ Output image:
 
 ### Face recognition system
 Results with a known face within the dataset :
-![Known Face](readme_graphics/detected.png | 360x360 )
+![Known Face](https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/detected.PNG | 360x360 )
 
 Results with an AI generated unknown face :
-![Unknown Face](readme_graphics/undetected.png | 360x360 )
+![Unknown Face](https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/undetected.PNG | 360x360 )
