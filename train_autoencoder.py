@@ -151,10 +151,11 @@ class Model:
         return total_loss
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':   
     # transformation of the images, resize to (320, 320) and convert to float32 (normalized)
     transform = torch.nn.Sequential(
         transforms.Resize((320, 320), antialias=True),
+        transforms.ColorJitter(0.3, 0.3, 0.3),
         transforms.ConvertImageDtype(torch.float32)
     )
 
@@ -173,8 +174,8 @@ if __name__ == '__main__':
     network = Network().to(DEVICE)
 
     # path for the model checkpoints
-    save_path = r'autoencoder/model_checkpoints/'
+    save_path = os.getcwd()
 
     model = Model(network, loss_function=nn.MSELoss()) # use MSE as loss function
 
-    model.train(train_dataloader=train_dataloader, val_dataloader=val_dataloader, num_epochs=20, save_path=save_path)
+    model.train(train_dataloader=train_dataloader, val_dataloader=val_dataloader, num_epochs=2, save_path=save_path)
