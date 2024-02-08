@@ -1,13 +1,24 @@
 import cv2
 import os
 import glob
+import argparse
 
 # Load the Haar cascade for face detection
 cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(cascade_path)
 
-ORIGINAL_IMAGE_PATH = r'D:\daisy_dataset\image\steffen'
-NEW_FOLDER = r"D:\clean_dataset\steffen"
+parser = argparse.ArgumentParser(description="Dataset Cleaning Script")
+parser.add_argument("--original_path", required=True, help="Please specify path of your original images file.")
+parser.add_argument("--cleaned_path", required=True, help="Please specify path where you wish to save your cleaned dataset.")
+args = parser.parse_args()
+
+ORIGINAL_IMAGE_PATH = args.original_path
+NEW_FOLDER = args.cleaned_path
+
+# Commented out to make copy-paste for presentation purposes easier
+# ORIGINAL_IMAGE_PATH = r'D:\daisy_dataset\image\steffen'
+# NEW_FOLDER = r"D:\clean_dataset\steffen"
+
 total = 0
 
 # Check if the TEST_FOLDER exists, if not, create one
@@ -17,6 +28,7 @@ if not os.path.exists(NEW_FOLDER):
 
 # Use glob to get a list of files in the directory
 img_names = glob.glob(os.path.join(ORIGINAL_IMAGE_PATH, '*'))
+print(img_names)
 
 #print(img_names)
 total_noise = 0

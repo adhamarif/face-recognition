@@ -9,6 +9,7 @@ from torchvision.io import read_image
 from torchvision.utils import make_grid
 from sklearn.model_selection import train_test_split
 
+# Please replace with your own respective paths for each
 LABEL_FILE = r"D:\clean_dataset\label.csv"
 IMAGE_FOLDER = r"D:\clean_dataset"
 
