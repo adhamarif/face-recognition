@@ -5,11 +5,11 @@ from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
 from PIL import Image
 from torchvision import datasets, transforms
-from device import DEVICE
-from load_dataset import CustomImageDataset, LABEL_FILE, IMAGE_FOLDER
+from network.device import DEVICE
+from network.load_dataset import CustomImageDataset
 import numpy as np
-from transform import training_transform,validation_transform
-from network import NeuralNetwork
+from network.transform import training_transform,validation_transform
+from network.network import NeuralNetwork
 import torch.optim as optim
 from tqdm import tqdm
 import json
@@ -17,8 +17,8 @@ import datetime
 from torch.utils.tensorboard import SummaryWriter
 import tensorboard
 
-
-
+LABEL_FILE = r"D:\clean_dataset\face_label_encoded.csv"
+IMAGE_FOLDER = r"D:\clean_dataset"
 
 train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='train',balance_class=True,transform=training_transform)
 val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val',transform=validation_transform)
