@@ -70,17 +70,24 @@ class CustomImageDataset(Dataset):
 
 if __name__ == '__main__':
     # apply transformation to the images
-    transform = torch.nn.Sequential(
-        transforms.Resize((480, 480), antialias=True),
+    train_transform = torch.nn.Sequential(
+        transforms.Resize((320, 320), antialias=True),
+        transforms.RandomHorizontalFlip(0.5),
+        transforms.ColorJitter(0.3, 0.3, 0.3),
+        transforms.ConvertImageDtype(torch.float32)
+    )
+
+    valid_transform = torch.nn.Sequential(
+        transforms.Resize((320, 320), antialias=True),
         transforms.ConvertImageDtype(torch.float32)
     )
 
     # load the training dataset
-    train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='train', balance_class=True, target_label='dennis')
+    train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=train_transform, subset='train', balance_class=True, target_label='dennis')
     print(f'Training dataset size: {len(train_dataset)} images')
 
-    # load the validtaion dataset
-    val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=transform, subset='val', target_label='dennis')
+    # load the validation dataset
+    val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER, transform=valid_transform, subset='val', target_label='dennis')
     print(f'Validation dataset size: {len(val_dataset)} images')
 
     dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
