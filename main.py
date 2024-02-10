@@ -21,7 +21,7 @@ confidence_threshold = 0.85
 ae_net = Network().to(DEVICE)
 
 PATH_TO_URL = {
-  "fr_model_best.pt":  "https://drive.google.com/file/d/1mY37yMq17PaPS4KrXzjloeDhDfjJ3xL5/view",
+  "fr_model_best.pt":  "https://drive.google.com/file/d/1QdGp8TqsM_0_6npDOVPeKjvHAvFQHSCX/view",
   "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
