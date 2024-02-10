@@ -18,8 +18,12 @@ from torch.utils.tensorboard import SummaryWriter
 import tensorboard
 import argparse
 
+# Commented out for copy-paste purposes in live presentation
+# IMAGES_FOLDER = "C:\\Users\\ASUS\\datasets\\cleaned_face"
+
 parser = argparse.ArgumentParser(description="Network Training Script")
 parser.add_argument("--images_folder", required=True, help="Please specify path of your face images folder.")
+parser.add_argument("--session_state", required=True, help="Please specify the state of your training session.")
 args = parser.parse_args()
 
 
@@ -28,10 +32,8 @@ LABEL_FILE = IMAGE_FOLDER + "\\face_label_encoded.csv"
 
 train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='train',balance_class=True,transform=training_transform)
 val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val',transform=validation_transform)
-test_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='test',transform=validation_transform)
 dataloader_train = DataLoader(train_dataset, batch_size=64, shuffle=True)
 dataloader_val = DataLoader(val_dataset, batch_size=64, shuffle=True)
-dataloader_test = DataLoader(test_dataset, batch_size=3, shuffle=True)
 num_labels = 12 # for 12 faces/classes
 net = NeuralNetwork(num_labels).to(DEVICE)
 loss_fn = torch.nn.CrossEntropyLoss(reduction="none")
@@ -44,14 +46,17 @@ if not os.path.exists("models"):
     os.makedirs("models")
 
 
-try:
-    chkpts = list(os.listdir("models"))
-    chkpt_paths = ["models\\"+ i for i in chkpts] 
-    last_chkpt = chkpt_paths[-1]
-    checkpoint = torch.load(last_chkpt)
-    print(f"Checkpoint found.\nStarting from session {last_chkpt}....")
-    net.load_state_dict(checkpoint["net_state_dict"])
-    optimizer.load_state_dict(checkpoint["optim_state_dict"])
+try :
+    if args.session_state == "startnew":
+        print("Starting new session...")
+    if args.session_state == "continue":
+        chkpts = list(os.listdir("models\\"))
+        chkpt_paths = ["models\\"+ i for i in chkpts]
+        last_chkpt = chkpt_paths[-1]
+        checkpoint = torch.load(last_chkpt)
+        print(f"Checkpoint found.\nStarting from session {last_chkpt}....")
+        net.load_state_dict(checkpoint["net_state_dict"])
+        optimizer.load_state_dict(checkpoint["optim_state_dict"])
 except:
     print("No checkpoint found.\nStarting from scratch...")
 
@@ -192,7 +197,7 @@ while True:
         best_vacc = avg_vacc
         patience_counter = 0 # Reset patience counter to 0 if there's improvement
         # Employ saving state dicts of network and optimizer as a checkpoint dictionary
-        chkpt_path = f'models/model_{timestamp}_{epoch+1}.pt'
+        chkpt_path = f'models\\model_{timestamp}_{epoch+1}.pt'
         torch.save({
             "net_state_dict" : net.state_dict(),
             "optim_state_dict" : optimizer.state_dict(),

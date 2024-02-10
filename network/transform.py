@@ -44,9 +44,7 @@ if __name__ == "__main__":
     print(f'training dataset size: {len(train_dataset)}.')
     val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val',transform=validation_transform)
     print(f'validation dataset size: {len(val_dataset)}.')
-    test_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='test',transform=validation_transform)
-    print(f'test dataset size: {len(test_dataset)}.')
-    image, label = test_dataset[int(random.uniform(0, len(test_dataset)))]
+    image, label = val_dataset[int(random.uniform(0, len(val_dataset)))]
     batch = None
     for index in range(32):
         transformed = training_transform(image)

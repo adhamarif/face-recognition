@@ -61,10 +61,8 @@ if __name__ == "__main__":
     
     train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='train',balance_class=True,transform=training_transform)
     val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val',transform=validation_transform)
-    test_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='test',transform=validation_transform)
     dataloader_train = DataLoader(train_dataset, batch_size=32, shuffle=True)
     dataloader_val = DataLoader(val_dataset, batch_size=32, shuffle=True)
-    dataloader_test = DataLoader(test_dataset, batch_size=3, shuffle=True)
     num_labels = 12
     net = NeuralNetwork(num_labels).to(DEVICE)
     model_parameters = filter(lambda p: p.requires_grad, net.parameters())
