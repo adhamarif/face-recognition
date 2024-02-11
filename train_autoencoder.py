@@ -33,7 +33,12 @@ class Model:
     def get_optimizer(self):
         return torch.optim.Adam(self.network.parameters(), lr=0.001)
     
-    def train(self, train_dataloader, val_dataloader, num_epochs, save_path=None):
+    def train(self, train_dataloader, val_dataloader, num_epochs=10, save_path=None):
+        '''
+        This method is used to start the training loop. The dataloader is required for both training and validation set.
+        Num of epochs is default at 10. You can adjusted this values accordingly.
+        If you wish to save the model checkpoint, please specify the path for it.
+        '''
         best_avg_loss = float('inf') # init highest avg loss value
 
         for epoch in range(num_epochs):
@@ -120,6 +125,9 @@ class Model:
         self.writer.close()
 
     def save_model(self, save_path, epoch, average_loss):
+        '''
+        This method is used to save the best model checkpoint in the local storage.
+        '''
         # Create a directory to save the model if it doesn't exist
         os.makedirs(save_path, exist_ok=True)
 
@@ -132,34 +140,8 @@ class Model:
         }
         torch.save(checkpoint, os.path.join(save_path, f'autoencoder_best_model.pth'))
 
-    def predict(self, dataloader):
-        total_loss = 0.0
-        num_batches = 0
-        # set up tqdm progress bar
-        progress = tqdm(dataloader, desc='Predicting')
-
-        for batch, _ in progress:
-            # Move batch to device if available
-            batch = batch.to(DEVICE)
-
-            # load the batch to the model
-            outputs = self.network(batch)
-
-            # calculate the loss
-            loss = self.loss_function(outputs, batch)
-
-            # Accumulate the loss
-            total_loss += loss.item()
-            num_batches += 1
-
-            # Update progress bar
-            progress.set_postfix(loss=total_loss / num_batches)
-        
-        return total_loss
-
-
 if __name__ == '__main__':   
-    # transformation of the images, resize to (320, 320) and convert to float32 (normalized)
+    # transformation of the images, resize to (320, 320), applied data augmentation and convert to float32 (normalized)
     train_transform = torch.nn.Sequential(
         transforms.Resize((320, 320), antialias=True),
         transforms.RandomHorizontalFlip(0.5),
@@ -167,6 +149,7 @@ if __name__ == '__main__':
         transforms.ConvertImageDtype(torch.float32)
     )
 
+    # transformation of the images, resize to (320, 320) and convert to float32 (normalized)
     valid_transform = torch.nn.Sequential(
         transforms.Resize((320, 320), antialias=True),
         transforms.ConvertImageDtype(torch.float32)
