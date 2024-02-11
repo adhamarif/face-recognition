@@ -4,8 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from autoencoder.device import DEVICE
 from autoencoder.load_dataset import CustomImageDataset
-import numpy as np
-from autoencoder.autoencoder_net import Network, Encoder, Decoder
+from autoencoder.autoencoder_net import Network
 from tqdm import tqdm
 import os
 from torch.utils.tensorboard import SummaryWriter
