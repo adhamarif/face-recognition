@@ -12,7 +12,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 # Please replace with your own respective paths for each
-LABEL_FILE = "C:\\Users\\ASUS\\datasets\\face_label_encoded.csv"
+LABEL_FILE = "C:\\Users\\ASUS\\datasets\\cleaned_face\\face_label_encoded.csv"
 IMAGE_FOLDER = "C:\\Users\\ASUS\\datasets\\cleaned_face"
 
 resize_transform = transforms.Compose([
@@ -31,17 +31,14 @@ class CustomImageDataset(Dataset):
         self.balance_class = balance_class
 
         # Split the data into training, validation, and test sets
-        train_data, test_data = train_test_split(self.img_labels, test_size=0.1, random_state=42)
-        train_data, val_data = train_test_split(train_data, test_size=0.15, random_state=42)
+        train_data, val_data = train_test_split(self.img_labels, test_size=0.2, random_state=42)
 
         if self.subset == 'train':
             self.data = train_data
         elif self.subset == 'val':
             self.data = val_data
-        elif self.subset == 'test':
-            self.data = test_data
         else:
-            raise ValueError("Subset must be one of 'train', 'val', or 'test'.")
+            raise ValueError("Subset must be one of 'train' or 'val'")
 
         # Optionally balance classes in the training set
         if self.balance_class and self.subset == 'train':
@@ -89,8 +86,6 @@ if __name__ == '__main__':
     print(f'training dataset size: {len(train_dataset)}.')
     val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val')
     print(f'validation dataset size: {len(val_dataset)}.')
-    test_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='test')
-    print(f'test dataset size: {len(test_dataset)}.')
     dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     batch, label = dataloader.__iter__().__next__()
         
