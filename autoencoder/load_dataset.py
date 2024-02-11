@@ -52,8 +52,9 @@ class CustomImageDataset(Dataset):
         return image, label
     
     def balance_classes(self, data):
-        # Implement class balancing logic here
-
+        '''
+        This method is used to oversampled the class to the highest label count
+        '''
         class_counts = data['label'].value_counts()
         max_class_count = class_counts.max()
 

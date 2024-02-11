@@ -31,14 +31,13 @@ class Model:
         self.optimizer = self.get_optimizer()
     
     def get_optimizer(self):
-        # Optimizers specified in the torch.optim package
         return torch.optim.Adam(self.network.parameters(), lr=0.001)
     
     def train(self, train_dataloader, val_dataloader, num_epochs, save_path=None):
-        best_avg_loss = float('inf')
+        best_avg_loss = float('inf') # init highest avg loss value
 
         for epoch in range(num_epochs):
-            # Set up tqdm progress bar
+            # Setup tqdm progress bar
             progress = tqdm(train_dataloader, desc=f'Epoch {epoch + 1}/{num_epochs}')
 
             total_loss = 0.0
@@ -69,8 +68,8 @@ class Model:
                 progress.set_postfix(loss=total_loss / num_batches)
 
                 # Log input images to TensorBoard
-                if num_batches % 40 == 0:  # Adjust this frequency as needed
-                    input_images = batch  # Adjust the number of images to log
+                if num_batches % 40 == 0:  # Adjust the frequency as needed
+                    input_images = batch
                     output_images = outputs
 
                     self.writer.add_images('Input Images', input_images, epoch * len(train_dataloader) + num_batches)
@@ -103,11 +102,10 @@ class Model:
                     if val_loss.item() > max_val_loss:
                         max_val_loss = val_loss.item()
             
-            #average_val_loss = total_val_loss / num_batches_val
             print(f'Max. validation loss: {max_val_loss:.4f}')
 
             # Log average validation loss to TensorBoard
-            self.writer.add_scalar('Max. validation loss', max_val_loss)
+            self.writer.add_scalar('Max. validation loss', max_val_loss, epoch + 1)
 
             # Switch back to training mode
             self.network.train()
@@ -117,7 +115,7 @@ class Model:
                 best_avg_loss = average_loss
                 # save the model if save_path is available
                 if save_path is not None:
-                    self.save_model(save_path, epoch + 1, best_avg_loss) # call the function to save the model
+                    self.save_model(save_path, epoch + 1, best_avg_loss) # save the model
         
         self.writer.close()
 

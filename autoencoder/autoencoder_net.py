@@ -12,7 +12,6 @@ class Down(nn.Module):
         self.relu = nn.ReLU()
         # Define a downsample layer
         self.seq = nn.Sequential(
-           # first convolution layer
             nn.Conv2d(in_channels=input_channels, out_channels=ouput_channels,
                       kernel_size=(3,3), padding=(1,1)),
             nn.MaxPool2d(kernel_size=(2,2), stride=(2,2)),
@@ -56,8 +55,8 @@ class Encoder(nn.Module):
             Down(32, 64),
             Down(64, 128),
             Down(128, 256),
-            nn.Flatten(),
-            nn.Linear(256*5*5, 1024), nn.ReLU()
+            nn.Flatten(),  # reshape to 1-D vector to create bottleneck
+            nn.Linear(256*5*5, 1024), nn.ReLU()  # fully connected layer (bottleneck)
         )
     
     def forward(self, x):
@@ -68,9 +67,8 @@ class Decoder(nn.Module):
     def __init__(self):
         super().__init__()
         self.decoder = nn.Sequential(
-            nn.Linear(1024, 6400),
-            # reshape based on the last dimension
-            nn.Unflatten(1, (256, 5, 5)),
+            nn.Linear(1024, 6400),  # fully connected layer (bottleneck)
+            nn.Unflatten(1, (256, 5, 5)),  # reshape based on the last dimension
             Up(256, 128),
             Up(128, 64),
             Up(64, 32),
