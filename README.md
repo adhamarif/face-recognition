@@ -147,8 +147,9 @@ python main.py --model network
 ### Face recognition system
 Results with a known face within the dataset :
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/detected.PNG" width="360" height="360">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/detected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-detected.jpg" width="360" height="360">
 
 Results with an AI generated unknown face :
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/undetected.PNG" width="360" height="360">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/undetected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-undetected.jpg" width="360" height="360">
+
