@@ -139,6 +139,9 @@ Neural Network:
 python main.py --model network
 ```
 
+> [!IMPORTANT]
+> Sometimes gdown has restricted URL retrieval. If you cannot download the file automatically via gdown model, you can download the model by clicking the link provided in the error prompt. Please make sure to download the model and save it inside a folder named `models`, so that it will located in the correct path.
+
 ## Results
 ### Autoencoder
 ![image](https://github.com/adhamarif/face-recognition/assets/92054450/2937206d-3842-49c2-92f6-750956b302e4)
