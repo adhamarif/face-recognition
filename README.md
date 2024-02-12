@@ -18,7 +18,7 @@ Other dependencies are listed as well in [requirements.txt](requirements.txt)
 
 ## Installation
 
-1 Clone this repository  
+1. Clone this repository  
 ```
 git clone https://github.com/adhamarif/face-recognition   
 ```
@@ -50,7 +50,7 @@ The autoencoder architecture consists of the following components:
 - **Unflatten** : A layer that reshape the vector back to its original shape
 - **Up**: A layer consists of convolution transpose, ReLU and batch normalization to reconstruct the image from lower dimensional embeddings to its original shape.
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE.png" width="360" height="360">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE.png">
 
 - **Encoder** : Down layers are repeated 6 times in sequence from to learn the feature from the input image (320, 320) to the lower dimensional shape (at the bottleneck). At the end of the encoder, a fully connected layer is added for the model to learn about every information in every pixels.
 - **Decoder** : A fully connected layer is added for the model to learn about every information in every pixels. Then, the Up layers are repeated 6 times to reconstruct the image back to its original dimension (320, 320). The last layer of Decoder is designed that it has no batch normalization and used Sigmoid as the activation function. The reason is because the final output should be retained as raw value and should not be normalized. 
@@ -141,15 +141,10 @@ python main.py --model network
 
 ## Results
 ### Autoencoder
-Input image:
-
-Output image:
+![image](https://github.com/adhamarif/face-recognition/assets/92054450/2937206d-3842-49c2-92f6-750956b302e4)
+![image](https://github.com/adhamarif/face-recognition/assets/92054450/844c6f43-d431-4eb0-8821-38cc066c4ed8)
 
 ### Face recognition system
-
-#### Autoencoder
-
-#### CNN
 Results with a known face within the dataset :
 
 <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/detected.PNG" width="360" height="360">
