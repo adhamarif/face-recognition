@@ -60,6 +60,9 @@ def face_recognition(fr_model):
         # Read a frame from the webcam
         ret, frame = cap.read()
 
+        # Flip the camera to get mirror image
+        frame = cv2.flip(frame, 1)
+
         if not ret:
             print("Error reading frame from webcam.")
             break
@@ -125,6 +128,9 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
     while True:
         # Read a frame from the webcam
         ret, frame = cap.read()
+
+        # Flip the camera to get mirror image
+        frame = cv2.flip(frame, 1)
 
         if not ret:
             print("Error reading frame from webcam.")
