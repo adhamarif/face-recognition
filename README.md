@@ -43,7 +43,17 @@ Dataset of known faces are trained by using **Autoencoder** with the aim of reco
 
 The loss value (of validation set) will then be taken as threshold value in order to distinguish known and unknown faces.
 
-[insert AE model architecture]
+The autoencoder architecture consists of the following components:
+- **Down**: A layer consists of convolution, maxpooling, ReLU and batch normalization resulting in a reduction in spatial dimensions.
+- **Flatten**: A layer that flattens the output from the last convolutional layer to prepare it for fully connected layers.
+- **Linear**: Fully connected layers. 
+- **Unflatten** : A layer that reshape the vector back to its original shape
+- **Up**: A layer consists of convolution transpose, ReLU and batch normalization to reconstruct the image from lower dimensional embeddings to its original shape.
+
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE.png" width="360" height="360">
+
+- **Encoder** : Down layers are repeated 6 times in sequence from to learn the feature from the input image (320, 320) to the lower dimensional shape (at the bottleneck). At the end of the encoder, a fully connected layer is added for the model to learn about every information in every pixels.
+- **Decoder** : A fully connected layer is added for the model to learn about every information in every pixels. Then, the Up layers are repeated 6 times to reconstruct the image back to its original dimension (320, 320). The last layer of Decoder is designed that it has no batch normalization and used Sigmoid as the activation function. The reason is because the final output should be retained as raw value and should not be normalized. 
 
 ### Neural Network
 The same dataset of known faces are trained by a **Convolutional Neural Network** to learn the features of the images. The logic is that at the end, the model is able to recognize the features of every person in the dataset and return the right label accordingly.
@@ -136,6 +146,10 @@ Input image:
 Output image:
 
 ### Face recognition system
+
+#### Autoencoder
+
+#### CNN
 Results with a known face within the dataset :
 
 <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/detected.PNG" width="360" height="360">
