@@ -185,7 +185,7 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
  
 def load_model(net,model_name):
     if os.path.exists("models\\" + model_name):
-        chkpt = torch.load("models\\" + model_name)
+        chkpt = torch.load("models\\" + model_name, map_location=torch.device('cpu'))
         net.load_state_dict(chkpt["net_state_dict"])
         return net
     else:
