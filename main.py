@@ -44,13 +44,15 @@ def label_translator(pred_id):
 
 
 def face_recognition(fr_model):
-    # This function takes the face recognition model and runs the video footage
-    # It does the following in order:
-    # 1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pt checkpoint file.
-    # 2. Opens webcam and detects face using a cascade .xml file
-    # 3. If faces are found, it feeds them into the face recognition model to try predict a face.
-    # 4. Prediction is displayed in frame.
-    # Open the webcam
+    '''
+    This function takes the face recognition model and runs the video footage
+    It does the following in order:
+    1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pt checkpoint file.
+    2. Opens webcam and detects face using a cascade .xml file
+    3. If faces are found, it feeds them into the face recognition model to try predict a face.
+    4. Prediction is displayed in frame.
+    Open the webcam
+    '''
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
     cascade = cv2.CascadeClassifier(cascade_path)
@@ -95,7 +97,7 @@ def face_recognition(fr_model):
             cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
         # Display the frame
-        cv2.imshow("Face Recognition", frame)
+        cv2.imshow("Face Recognition: CNN", frame)
 
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -106,14 +108,16 @@ def face_recognition(fr_model):
     cv2.destroyAllWindows()
         
 
-def ae_face_recognition(ae_model, loss_threshold=0.02):
-    # This function takes the face recognition model and runs the video footage
-    # It does the following in order:
-    # 1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pth checkpoint file.
-    # 2. Opens webcam and detects face using a cascade .xml file
-    # 3. The face is reconstructed by the pretrained autoencoder
-    # 4. Loss value of reconstruction is shown together with "Known" or "Unknown" displayed on frame based on the loss threshold specified
-    # Open the webcam
+def ae_face_recognition(ae_model, loss_threshold=0.01):
+    '''
+    This function takes the face recognition model and runs the video footage
+    It does the following in order:
+    1. Loads the model  from a file (if it exists) or finds the file online via a link. The model is saved as net_state_dict within a .pth checkpoint file.
+    2. Opens webcam and detects face using a cascade .xml file
+    3. The face is reconstructed by the pretrained autoencoder
+    4. Loss value of reconstruction is shown together with "Known" or "Unknown" displayed on frame based on the loss threshold specified
+    Open the webcam
+    '''
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
     cascade = cv2.CascadeClassifier(cascade_path)
@@ -163,7 +167,7 @@ def ae_face_recognition(ae_model, loss_threshold=0.02):
             cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
         # Display the frame
-        cv2.imshow("Face Recognition", frame)
+        cv2.imshow("Face Recognition: Autoencoder", frame)
 
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -175,7 +179,7 @@ def ae_face_recognition(ae_model, loss_threshold=0.02):
  
 def load_model(net,model_name):
     if os.path.exists("models\\" + model_name):
-        chkpt = torch.load(model_name)
+        chkpt = torch.load("models\\" + model_name)
         net.load_state_dict(chkpt["net_state_dict"])
         return net
     else:
