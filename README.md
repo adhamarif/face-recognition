@@ -164,7 +164,7 @@ python main.py --model network
 ### Face recognition system
 CNN results with known faces within the dataset :
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Kenny%20-%20Detected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Dennis%20-%20Detected.PNG" width="180" height="180">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Kenny%20-%20Detected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Dennis%20-%20Detected.PNG" width="360" height="360">
 
 CNN results with random unknown faces from the internet :
 
