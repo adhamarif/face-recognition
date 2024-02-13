@@ -21,7 +21,10 @@ confidence_threshold = 0.85
 ae_net = Network().to(DEVICE)
 
 PATH_TO_URL = {
-  "fr_model_best.pt":  "https://drive.google.com/file/d/1QdGp8TqsM_0_6npDOVPeKjvHAvFQHSCX/view",
+  "fr_best_model.pt":  "https://drive.google.com/file/d/1QdGp8TqsM_0_6npDOVPeKjvHAvFQHSCX/view?usp=sharing",
+  "fr_model_best3.pt": "https://drive.google.com/file/d/1ALR9xky_EGY7UOuP_RjEs1s4cDl6oaoC/view?usp=sharing",
+  "fr_model_best4.pt": "https://drive.google.com/file/d/15BoKopNvOb_xg2rjYw5iaXaUTRntrUW0/view?usp=sharing",
+  "fr_model_best2.pt": "https://drive.google.com/file/d/15BoKopNvOb_xg2rjYw5iaXaUTRntrUW0/view?usp=sharing",
   "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
@@ -87,6 +90,7 @@ def face_recognition(fr_model):
                 confidence = torch.softmax(prediction,dim=1)
                 # Get the index of label predicted
                 value,preds = torch.max(confidence,1) 
+                print(preds)
                 predicted_face = label_translator(preds)
 
             if value > confidence_threshold :
@@ -207,7 +211,7 @@ if __name__ == "__main__":
 
     if args.model == "network" :           
         # Load the face recognition model
-        model = load_model(fr_net,"fr_model_best.pt")
+        model = load_model(fr_net,"fr_model_best3.pt")
         model.eval()
         face_recognition(model)
 
