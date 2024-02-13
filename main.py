@@ -168,10 +168,10 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
             # You can take it from here and process the prediction variable as needed
 
             if loss < loss_threshold :
-                text = f"Known Face {loss:.4f}"
+                text = f"Known Face, Loss: {loss:.4f}"
                 color = (0, 255, 0)  # Green color
             else:
-                text = f"Unknown Face {loss:.4f}"
+                text = f"Unknown Face, Loss: {loss:.4f}"
                 color = (0, 0, 255)  # Red color
             # Draw a rectangle around the detected face
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
