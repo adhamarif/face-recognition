@@ -62,11 +62,11 @@ The accuracy of each prediction is determined by a predefined confidence thresho
 
 The Down Layer:
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Down%20Layer.png">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Down%20Layer.PNG">
 
 The Network Layers:
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Network%20Architecture.png">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Network%20Architecture.PNG">
 
 The neural network architecture consists of the following components:
 
