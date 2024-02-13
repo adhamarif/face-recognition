@@ -60,6 +60,14 @@ The same dataset of known faces are trained by a **Convolutional Neural Network*
 
 The accuracy of each prediction is determined by a predefined confidence threshold that the predictions need to meet in order to be classed as a correct prediction. 
 
+The Down Layer:
+
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Down%20Layer.png">
+
+The Network Layers:
+
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Network%20Architecture.png">
+
 The neural network architecture consists of the following components:
 
 - **Down**: 6 layers performing convolution followed by maxpooling, batch normalization and ReLU resulting in a reduction in spatial dimensions.
