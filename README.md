@@ -176,6 +176,6 @@ Autoencoder results with known faces within the dataset :
  
 Autoencoder results with unknown faces from the internet :
 
- <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-undetected.jpg" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Messi%20AE%20-%20Undetected.PNG" width="360" height="360">
+ <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Jon%20AE%20-%20Undetected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Messi%20AE%20-%20Undetected.PNG" width="360" height="360">
 
 
