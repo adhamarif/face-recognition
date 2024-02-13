@@ -89,17 +89,18 @@ def face_recognition(fr_model):
                 # Convert to probability or "confidence value"
                 confidence = torch.softmax(prediction,dim=1)
                 # Get the index of label predicted
-                value,preds = torch.max(confidence,1) 
-                print(preds)
+                value,preds = torch.max(confidence,1)
+                # Translate the index to text of label
                 predicted_face = label_translator(preds)
 
+            # Check confidence value if greater than threshold
             if value > confidence_threshold :
                 text = "Detected Face: {}".format(predicted_face)  # Replace with your actual face label or information
                 color = (0, 255, 0)  # Green color
             else:
                 text = "Unknown Face"
                 color = (0, 0, 255)  # Red color
-                        # Draw a rectangle around the detected face
+            # Draw a rectangle around the detected face
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
@@ -188,6 +189,7 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
     cv2.destroyAllWindows()
  
 def load_model(net,model_name):
+    # Check if model exists locally, else download from given URLs
     if os.path.exists("models\\" + model_name):
         chkpt = torch.load("models\\" + model_name, map_location=torch.device('cpu'))
         net.load_state_dict(chkpt["net_state_dict"])
@@ -213,13 +215,14 @@ if __name__ == "__main__":
         # Load the face recognition model
         model = load_model(fr_net,"fr_model_best3.pt")
         model.eval()
+        # Run face recognition with network
         face_recognition(model)
 
     if args.model == "autoencoder" :
         # Load the autoencoder face recognition model
         model = load_model(ae_net,"autoencoder_best_model.pth")
         model.eval()
-        # Run face recognition with the specified model and cascade
+        # Run face recognition with autoencoder
         ae_face_recognition(model)
             
         
