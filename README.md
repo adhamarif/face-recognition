@@ -1,4 +1,10 @@
 # face-recognition
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+![image](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+
 A project that implements deep learning methods for face detection and recognition. Two networks are used for this project, **Neural Network** and **Autoencoder**. Both models served different purposes with similar goals, which is to distinguish between known and unknown faces. We first collected the datasets of facial images of people (with consent) and used them to train our two networks. At the end, we implement our trained models back into the webcam footage which will then carry out our facial detection and recognition procedure.
 
 ## Tools used
