@@ -162,11 +162,20 @@ python main.py --model network
 ![image](https://github.com/adhamarif/face-recognition/assets/92054450/844c6f43-d431-4eb0-8821-38cc066c4ed8)
 
 ### Face recognition system
-Results with a known face within the dataset :
+CNN results with known faces within the dataset :
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/detected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-detected.jpg" width="360" height="360">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Kenny%20-%20Detected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Dennis%20-%20Detected.PNG" width="180" height="180">
 
-Results with an AI generated unknown face :
+CNN results with random unknown faces from the internet :
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/undetected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-undetected.jpg" width="360" height="360">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/MJ%20-%20Undetected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Son%20-%20Undetected.PNG" width="360" height="360">
+
+Autoencoder results with known faces within the dataset :
+
+ <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-detected.jpg" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Syahid%20AE%20-%20Detected.PNG" width="360" height="360">
+ 
+Autoencoder results with unknown faces from the internet :
+
+ <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-undetected.jpg" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Messi%20AE%20-%20Undetected.PNG" width="360" height="360">
+
 
