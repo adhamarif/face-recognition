@@ -45,7 +45,7 @@ optimizer = optim.Adam(net.parameters(), lr=0.001)
 if not os.path.exists("models"):
     os.makedirs("models")
 
-
+# Try to find checkpoints, if not found, start from scratch
 try :
     if args.session_state == "startnew":
         print("Starting new session...")
@@ -60,6 +60,7 @@ try :
 except:
     print("No checkpoint found.\nStarting from scratch...")
 
+# Define training function for an epoch
 def train_epoch(epoch_id,tb_writer):
     # Initialize running loss and last loss for every batch
     running_loss = 0
@@ -69,7 +70,7 @@ def train_epoch(epoch_id,tb_writer):
     labels_count = 0
     top_loss_values = None
     top_loss_samples = None
-    # Try with one batch
+    # Loop through all training set batches
     for i, data in enumerate(dataloader_train):
         # Get inputs and labels
         inputs, labels = data
@@ -100,7 +101,8 @@ def train_epoch(epoch_id,tb_writer):
         img = make_grid(top_loss_samples, nrow=8)
         tb_writer.add_image("top_loss_samples",img,global_step=epoch_id)
         loss = torch.mean(loss)
-        # Test 
+        
+        # Feed loss backwards 
         loss.backward()
 
         # Adjust weights
@@ -123,7 +125,7 @@ def train_epoch(epoch_id,tb_writer):
 
 
 # Initialize timestamp and summary writer
-# Name your checkpoints with timestamps during fine-tuning. Once your find the best model its better to rename it to find it easier.
+# Name your checkpoints with timestamps during fine-tuning. Once your find the best model its better to rename it uniquely to find it easier.
 timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S') 
 writer = SummaryWriter()
 
@@ -151,7 +153,7 @@ while True:
     vlabels_count = 0
     net.eval()
 
-    # Disable gradient computation
+    # Disable gradient computation for validation set
     with torch.no_grad():
         for i, vdata in enumerate(dataloader_val):
             vinputs, vlabels = vdata

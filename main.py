@@ -20,6 +20,7 @@ confidence_threshold = 0.85
 
 ae_net = Network().to(DEVICE)
 
+# Define online model paths
 PATH_TO_URL = {
   "fr_best_model.pt":  "https://drive.google.com/file/d/1QdGp8TqsM_0_6npDOVPeKjvHAvFQHSCX/view?usp=sharing",
   "fr_model_best3.pt": "https://drive.google.com/file/d/1ALR9xky_EGY7UOuP_RjEs1s4cDl6oaoC/view?usp=sharing",
@@ -28,12 +29,13 @@ PATH_TO_URL = {
   "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
-# Define image transformation
+# Define webcam image transformation for Autoencoder
 image_transform = transforms.Compose([
     transforms.Resize((320, 320)),  # Resize the image
     transforms.ToTensor()  # Convert PIL Image to PyTorch Tensor
 ])
 
+# Define label translator for CNN.(Can be obtained from label_generator.py)
 def label_translator(pred_id):
     labels_dict = {
     0: 'adham', 1: 'dennis', 2: 'justin',
@@ -45,7 +47,7 @@ def label_translator(pred_id):
         if pred_id == key : 
             return value
 
-
+# Define face recognition function for CNN
 def face_recognition(fr_model):
     '''
     This function takes the face recognition model and runs the video footage
@@ -54,7 +56,6 @@ def face_recognition(fr_model):
     2. Opens webcam and detects face using a cascade .xml file
     3. If faces are found, it feeds them into the face recognition model to try predict a face.
     4. Prediction is displayed in frame.
-    Open the webcam
     '''
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
@@ -115,7 +116,7 @@ def face_recognition(fr_model):
     cap.release()
     cv2.destroyAllWindows()
         
-
+# Define face recognition function for Autoencoder
 def ae_face_recognition(ae_model, loss_threshold=0.01):
     '''
     This function takes the face recognition model and runs the video footage
@@ -124,7 +125,6 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
     2. Opens webcam and detects face using a cascade .xml file
     3. The face is reconstructed by the pretrained autoencoder
     4. Loss value of reconstruction is shown together with "Known" or "Unknown" displayed on frame based on the loss threshold specified
-    Open the webcam
     '''
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'

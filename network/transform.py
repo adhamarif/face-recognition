@@ -9,23 +9,24 @@ from matplotlib import pyplot as plt
 from .device import DEVICE
 import numpy as np
 
-
+# Transformation function for training set
 training_transform = transforms.Compose([
         transforms.RandomRotation(15),
         transforms.CenterCrop((256, 256)),
-        # transforms.RandomCrop((128, 128)),
         transforms.RandomHorizontalFlip(0.5),
         transforms.ColorJitter(0.3, 0.3, 0.3),
         transforms.ConvertImageDtype(torch.float32)
         ]
     )
 
+# Transformation function for validation set
 validation_transform = transforms.Compose([
         transforms.CenterCrop((256, 256)),
         transforms.ConvertImageDtype(torch.float32)
         ]
     )
 
+# Transformation function for webcam test dataset
 image_transform = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize((360, 360), antialias=True),
@@ -34,8 +35,6 @@ image_transform = transforms.Compose([
         ]
     )
 
-def label_to_tensor(label):
-    return torch.Tensor([label]).type(torch.LongTensor).to(DEVICE).reshape(-1)
 
 if __name__ == "__main__":
 
@@ -46,6 +45,7 @@ if __name__ == "__main__":
     print(f'validation dataset size: {len(val_dataset)}.')
     image, label = val_dataset[int(random.uniform(0, len(val_dataset)))]
     batch = None
+    # Visualize a batch of images of one label
     for index in range(32):
         transformed = training_transform(image)
         transformed = transformed.reshape(1, 3, 256, 256)
