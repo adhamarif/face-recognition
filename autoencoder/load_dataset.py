@@ -14,7 +14,7 @@ LABEL_FILE = r"D:\clean_dataset\label.csv"
 IMAGE_FOLDER = r"D:\clean_dataset"
 
 class CustomImageDataset(Dataset):
-    def __init__(self, annotations_file, img_dir, transform=None, subset="train", balance_class=False, target_label=None): #, target_label=None):
+    def __init__(self, annotations_file, img_dir, transform=None, subset="train", balance_class=False, target_label=None):
         self.img_labels = pd.read_csv(annotations_file)
         self.img_dir = img_dir
         self.transform = transform

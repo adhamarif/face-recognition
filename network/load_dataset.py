@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 LABEL_FILE = "C:\\Users\\ASUS\\datasets\\cleaned_face\\face_label_encoded.csv"
 IMAGE_FOLDER = "C:\\Users\\ASUS\\datasets\\cleaned_face"
 
+# Image resizing transformation function
 resize_transform = transforms.Compose([
     transforms.Resize((360, 360), antialias=True),
 ])
@@ -61,11 +62,11 @@ class CustomImageDataset(Dataset):
         return image, label
 
     def balance_classes(self, data):
-        # Implement class balancing logic here
-
+        # Asses class distributions and identify majority class
         class_counts = data['label'].value_counts()
         max_class_count = class_counts.max()
 
+        # Create empty dataframe to fill in our balanced data
         balanced_data = pd.DataFrame(columns=data.columns)
 
         for class_label, count in class_counts.items():
@@ -88,8 +89,8 @@ if __name__ == '__main__':
     print(f'validation dataset size: {len(val_dataset)}.')
     dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     batch, label = dataloader.__iter__().__next__()
-        
+    # Make a grid of the batch data to visualize    
     grid = make_grid(batch, 8, padding=4).permute(1,2,0)
-
+    # Use pyplot to display
     plt.imshow(grid.cpu())
     plt.show()

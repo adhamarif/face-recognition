@@ -9,7 +9,7 @@ import numpy as np
 from .transform import training_transform,validation_transform
 from sklearn.model_selection import train_test_split
 
-
+# Define Down Layer
 class Down(nn.Module):
     def __init__(self, in_features, out_features):
         super(Down, self).__init__()
@@ -24,6 +24,7 @@ class Down(nn.Module):
     def forward(self, x):
         return self.seq(x)
 
+# Define Network infrastructure
 class NeuralNetwork(torch.nn.Module):
     def __init__(self,num_labels):
         super(NeuralNetwork, self).__init__()
@@ -43,12 +44,11 @@ class NeuralNetwork(torch.nn.Module):
             nn.Dropout2d(0.2),
             Down(in_features =  256, out_features = 512), # 512x4x4
             nn.Dropout2d(0.2),
-            nn.Flatten(), # 4096 dimensional
+            nn.Flatten(), # 8192 dimensional
             nn.Linear(8192, 512), # 8192 to 512 dimensional
             nn.ReLU(), # Another ReLU
             nn.Dropout(0.5),
             nn.Linear(512, num_labels)
-            # nn.Softmax(dim=-1)- Commented out because CrossEntropyLoss already apply  softmax
         )
 
     def forward(self, x):
@@ -58,16 +58,18 @@ class NeuralNetwork(torch.nn.Module):
 
 
 if __name__ == "__main__":
-    
+    # Load dataset
     train_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='train',balance_class=True,transform=training_transform)
     val_dataset = CustomImageDataset(LABEL_FILE, IMAGE_FOLDER,subset='val',transform=validation_transform)
     dataloader_train = DataLoader(train_dataset, batch_size=32, shuffle=True)
     dataloader_val = DataLoader(val_dataset, batch_size=32, shuffle=True)
+    # Define network
     num_labels = 12
     net = NeuralNetwork(num_labels).to(DEVICE)
     model_parameters = filter(lambda p: p.requires_grad, net.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
     print(f"Network has {params} total parameters")
+    # Define loss function and print loss for one batch to test
     loss_fn = torch.nn.CrossEntropyLoss()
     batch, labels = dataloader_train.__iter__().__next__()
     batch = batch.to(DEVICE)

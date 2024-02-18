@@ -20,17 +20,22 @@ confidence_threshold = 0.85
 
 ae_net = Network().to(DEVICE)
 
+# Define online model paths
 PATH_TO_URL = {
-  "fr_model_best.pt":  "https://drive.google.com/file/d/1QdGp8TqsM_0_6npDOVPeKjvHAvFQHSCX/view",
+  "fr_best_model.pt":  "https://drive.google.com/file/d/1QdGp8TqsM_0_6npDOVPeKjvHAvFQHSCX/view?usp=sharing",
+  "fr_model_best3.pt": "https://drive.google.com/file/d/1ALR9xky_EGY7UOuP_RjEs1s4cDl6oaoC/view?usp=sharing",
+  "fr_model_best4.pt": "https://drive.google.com/file/d/15BoKopNvOb_xg2rjYw5iaXaUTRntrUW0/view?usp=sharing",
+  "fr_model_best2.pt": "https://drive.google.com/file/d/15BoKopNvOb_xg2rjYw5iaXaUTRntrUW0/view?usp=sharing",
   "autoencoder_best_model.pth": "https://drive.google.com/file/d/1-P3wPTDgb2Xhw9NCnrfpUHNxXZl00_Jy/view?usp=sharing" #AE
 }
 
-# Define image transformation
+# Define webcam image transformation for Autoencoder
 image_transform = transforms.Compose([
     transforms.Resize((320, 320)),  # Resize the image
     transforms.ToTensor()  # Convert PIL Image to PyTorch Tensor
 ])
 
+# Define label translator for CNN.(Can be obtained from label_generator.py)
 def label_translator(pred_id):
     labels_dict = {
     0: 'adham', 1: 'dennis', 2: 'justin',
@@ -42,7 +47,7 @@ def label_translator(pred_id):
         if pred_id == key : 
             return value
 
-
+# Define face recognition function for CNN
 def face_recognition(fr_model):
     '''
     This function takes the face recognition model and runs the video footage
@@ -51,7 +56,6 @@ def face_recognition(fr_model):
     2. Opens webcam and detects face using a cascade .xml file
     3. If faces are found, it feeds them into the face recognition model to try predict a face.
     4. Prediction is displayed in frame.
-    Open the webcam
     '''
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
@@ -86,16 +90,18 @@ def face_recognition(fr_model):
                 # Convert to probability or "confidence value"
                 confidence = torch.softmax(prediction,dim=1)
                 # Get the index of label predicted
-                value,preds = torch.max(confidence,1) 
+                value,preds = torch.max(confidence,1)
+                # Translate the index to text of label
                 predicted_face = label_translator(preds)
 
+            # Check confidence value if greater than threshold
             if value > confidence_threshold :
                 text = "Detected Face: {}".format(predicted_face)  # Replace with your actual face label or information
                 color = (0, 255, 0)  # Green color
             else:
                 text = "Unknown Face"
                 color = (0, 0, 255)  # Red color
-                        # Draw a rectangle around the detected face
+            # Draw a rectangle around the detected face
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
@@ -110,7 +116,7 @@ def face_recognition(fr_model):
     cap.release()
     cv2.destroyAllWindows()
         
-
+# Define face recognition function for Autoencoder
 def ae_face_recognition(ae_model, loss_threshold=0.01):
     '''
     This function takes the face recognition model and runs the video footage
@@ -119,7 +125,6 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
     2. Opens webcam and detects face using a cascade .xml file
     3. The face is reconstructed by the pretrained autoencoder
     4. Loss value of reconstruction is shown together with "Known" or "Unknown" displayed on frame based on the loss threshold specified
-    Open the webcam
     '''
     cap = cv2.VideoCapture(0)
     cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
@@ -163,10 +168,10 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
             # You can take it from here and process the prediction variable as needed
 
             if loss < loss_threshold :
-                text = f"Known Face {loss:.4f}"
+                text = f"Known Face, Loss: {loss:.4f}"
                 color = (0, 255, 0)  # Green color
             else:
-                text = f"Unknown Face {loss:.4f}"
+                text = f"Unknown Face, Loss: {loss:.4f}"
                 color = (0, 0, 255)  # Red color
             # Draw a rectangle around the detected face
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
@@ -184,6 +189,7 @@ def ae_face_recognition(ae_model, loss_threshold=0.01):
     cv2.destroyAllWindows()
  
 def load_model(net,model_name):
+    # Check if model exists locally, else download from given URLs
     if os.path.exists("models\\" + model_name):
         chkpt = torch.load("models\\" + model_name, map_location=torch.device('cpu'))
         net.load_state_dict(chkpt["net_state_dict"])
@@ -207,15 +213,16 @@ if __name__ == "__main__":
 
     if args.model == "network" :           
         # Load the face recognition model
-        model = load_model(fr_net,"fr_model_best.pt")
+        model = load_model(fr_net,"fr_model_best3.pt")
         model.eval()
+        # Run face recognition with network
         face_recognition(model)
 
     if args.model == "autoencoder" :
         # Load the autoencoder face recognition model
         model = load_model(ae_net,"autoencoder_best_model.pth")
         model.eval()
-        # Run face recognition with the specified model and cascade
+        # Run face recognition with autoencoder
         ae_face_recognition(model)
             
         

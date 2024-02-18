@@ -1,4 +1,10 @@
 # face-recognition
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+![image](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+
 A project that implements deep learning methods for face detection and recognition. Two networks are used for this project, **Neural Network** and **Autoencoder**. Both models served different purposes with similar goals, which is to distinguish between known and unknown faces. We first collected the datasets of facial images of people (with consent) and used them to train our two networks. At the end, we implement our trained models back into the webcam footage which will then carry out our facial detection and recognition procedure.
 
 ## Tools used
@@ -59,6 +65,14 @@ The autoencoder architecture consists of the following components:
 The same dataset of known faces are trained by a **Convolutional Neural Network** to learn the features of the images. The logic is that at the end, the model is able to recognize the features of every person in the dataset and return the right label accordingly.
 
 The accuracy of each prediction is determined by a predefined confidence threshold that the predictions need to meet in order to be classed as a correct prediction. 
+
+The Down Layer:
+
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Down%20Layer.PNG">
+
+The Network Layers:
+
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Network%20Architecture.PNG">
 
 The neural network architecture consists of the following components:
 
@@ -139,17 +153,29 @@ Neural Network:
 python main.py --model network
 ```
 
+> [!IMPORTANT]
+> Sometimes gdown has restricted URL retrieval. If you cannot download the file automatically via gdown model, you can download the model by clicking the link provided in the error prompt. Please make sure to download the model and save it inside a folder named `models`, so that it will located in the correct path.
+
 ## Results
 ### Autoencoder
 ![image](https://github.com/adhamarif/face-recognition/assets/92054450/2937206d-3842-49c2-92f6-750956b302e4)
 ![image](https://github.com/adhamarif/face-recognition/assets/92054450/844c6f43-d431-4eb0-8821-38cc066c4ed8)
 
 ### Face recognition system
-Results with a known face within the dataset :
+CNN results with known faces within the dataset :
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/detected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-detected.jpg" width="360" height="360">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Kenny%20-%20Detected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Dennis%20-%20Detected.PNG" width="360" height="360">
 
-Results with an AI generated unknown face :
+CNN results with random unknown faces from the internet :
 
-<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/undetected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-undetected.jpg" width="360" height="360">
+<img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/MJ%20-%20Undetected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Son%20-%20Undetected.PNG" width="360" height="360">
+
+Autoencoder results with known faces within the dataset :
+
+ <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/AE-detected.jpg" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Syahid%20AE%20-%20Detected.PNG" width="360" height="360">
+ 
+Autoencoder results with unknown faces from the internet :
+
+ <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Jon%20AE%20-%20Undetected.PNG" width="360" height="360"> <img src="https://github.com/adhamarif/face-recognition/blob/main/readme_graphics/Messi%20AE%20-%20Undetected.PNG" width="360" height="360">
+
 

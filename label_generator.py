@@ -24,9 +24,10 @@ for id,name in enumerate(names):
     if '.csv' not in name: # exclude label previous label file, if exists
         names_dict[id] = name
 
-# name with id mapping
+# Output names with id mapping
 print(names_dict)
 
+# Create row generator for csv
 def row_generator(folder_list,names_dict):
     '''
     Generator that yield every file_path for every images, corresponding to its folder name and id
@@ -42,12 +43,13 @@ def row_generator(folder_list,names_dict):
 row_gen = row_generator([faces_folder],names_dict)
 
 image_counter = 0
+
+# Get total number of images generated
 try:
     while True:
         # Attempt to get the next item
         next_item = next(row_gen)
         image_counter += 1
-        #print(next_item)
 except StopIteration:
     print(f"End of iterator reached with {image_counter} images.")
     
